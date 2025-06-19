@@ -95,7 +95,7 @@ export default function ChatInterface() {
 
     useEffect(scrollToBottom, [messages, isTyping])
 
-    useEffect(() => {
+  useEffect(() => {
         const recommendTherapist = async () => {
             setIsTyping(true);
             await new Promise(resolve => setTimeout(resolve, 2000));
