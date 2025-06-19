@@ -94,6 +94,37 @@ export default function ChatInterface() {
 
     useEffect(scrollToBottom, [messages, isTyping])
 
+    useEffect(() => {
+        const recommendTherapist = async () => {
+            setIsTyping(true);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            setIsTyping(false);
+
+            const therapists = [
+                { 
+                    id: 'therapist-1', name: 'Kristin Watson', experience: '8+ years', availability: 'Available today', specialties: 'Deep tissue, aromatherapy, stress relief', rating: 4.9, reviewCount: 127, image: '/placeholder.svg', verified: true, gender: 'Woman', phone: '123-456-7890', services: '60 min massage', prices: '$150', location: "Therapist's Studio", timeAvailable: ['Afternoon'], specialty: 'Holistic & Deep Tissue Specialist', 
+                },
+                { 
+                    id: 'therapist-2', name: 'Marcus Johnson', experience: '12+ years', availability: 'Available tomorrow', specialties: 'Swedish massage, essential oils, relaxation', rating: 4.8, reviewCount: 89, image: '/placeholder.svg', verified: true, gender: 'Man', phone: '123-456-7890', services: '90 min massage', prices: '$200', location: "Therapist's Studio", timeAvailable: ['Morning', 'Evening'], specialty: 'Swedish & Relaxation Specialist',
+                },
+                { 
+                    id: 'therapist-3', name: 'Elena Rodriguez', experience: '6+ years', availability: 'Available today', specialties: 'Sports massage, myofascial release', rating: 4.9, reviewCount: 95, image: '/placeholder.svg', verified: true, gender: 'Woman', phone: '123-456-7890', services: '60 min sports massage', prices: '$140', location: "Therapist's Studio", timeAvailable: ['Evening'], specialty: 'Sports & Injury Recovery',
+                }
+            ];
+
+            const therapistData = therapists[Math.floor(Math.random() * therapists.length)];
+
+            addMessage({ sender: 'ai', content: "Based on your preferences, here's a therapist we recommend for you:" });
+            addMessage({ sender: 'ai', content: '', therapistInfo: therapistData });
+            addMessage({ sender: 'ai', content: "A representative will be calling you shortly to coordinate." });
+            setCurrentStep('complete');
+        };
+
+        if (currentStep === 'final_recommendation') {
+            recommendTherapist();
+        }
+    }, [currentStep, addMessage, setCurrentStep, setIsTyping]);
+
     const processAndSendMessage = async (content: string) => {
         addMessage({ sender: "user", content });
         setIsTyping(true);
@@ -328,30 +359,11 @@ export default function ChatInterface() {
             case 'q8_agreement':
                 updateUserPreferences({ hasAgreed: true });
                 addMessage({ sender: 'ai', content: "Thanks for making us better!" });
-                setCurrentStep('q9_recommendation');
-                
-                setIsTyping(true);
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                setIsTyping(false);
+                setCurrentStep('final_recommendation');
+                break;
 
-                const therapists = [
-                    { 
-                        id: 'therapist-1', name: 'Kristin Watson', experience: '8+ years', availability: 'Available today', specialties: 'Deep tissue, aromatherapy, stress relief', rating: 4.9, reviewCount: 127, image: '/placeholder.svg', verified: true, gender: 'Woman', phone: '123-456-7890', services: '60 min massage', prices: '$150', location: "Therapist's Studio", timeAvailable: ['Afternoon'], specialty: 'Holistic & Deep Tissue Specialist', 
-                    },
-                    { 
-                        id: 'therapist-2', name: 'Marcus Johnson', experience: '12+ years', availability: 'Available tomorrow', specialties: 'Swedish massage, essential oils, relaxation', rating: 4.8, reviewCount: 89, image: '/placeholder.svg', verified: true, gender: 'Man', phone: '123-456-7890', services: '90 min massage', prices: '$200', location: "Therapist's Studio", timeAvailable: ['Morning', 'Evening'], specialty: 'Swedish & Relaxation Specialist',
-                    },
-                    { 
-                        id: 'therapist-3', name: 'Elena Rodriguez', experience: '6+ years', availability: 'Available today', specialties: 'Sports massage, myofascial release', rating: 4.9, reviewCount: 95, image: '/placeholder.svg', verified: true, gender: 'Woman', phone: '123-456-7890', services: '60 min sports massage', prices: '$140', location: "Therapist's Studio", timeAvailable: ['Evening'], specialty: 'Sports & Injury Recovery',
-                    }
-                ];
-
-                const therapistData = therapists[Math.floor(Math.random() * therapists.length)];
-
-                addMessage({ sender: 'ai', content: "Based on your preferences, here's a therapist we recommend for you:" });
-                addMessage({ sender: 'ai', content: '', therapistInfo: therapistData });
-                addMessage({ sender: 'ai', content: "A representative will be calling you shortly to coordinate." });
-                setCurrentStep('complete');
+            case 'q9_recommendation':
+                // This case is now handled by the useEffect
                 break;
 
             case 'complete':
