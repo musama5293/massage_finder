@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ArrowUp, Check, Star, MessageCircle, Clock } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAppStore } from "../store/use-app-store"
+import { supabase } from "@/lib/supabaseClient"
 
 const preferenceLabels: { [key: string]: string } = {
   mood: "Current Mood",
@@ -124,6 +125,40 @@ export default function ChatInterface() {
             recommendTherapist();
         }
     }, [currentStep, addMessage, setCurrentStep, setIsTyping]);
+
+    useEffect(() => {
+        const saveSessionData = async () => {
+            if (userPreferences.hasAgreed) {
+                const { hasAgreed, ...preferencesToSave } = userPreferences;
+
+                const { data, error } = await supabase
+                    .from('sessions')
+                    .insert([
+                        { 
+                            session_id: preferencesToSave.sessionId,
+                            mood: preferencesToSave.mood,
+                            brings_here_today: preferencesToSave.bringsHereToday,
+                            treatment_matters: preferencesToSave.treatmentMatters,
+                            touch_style: preferencesToSave.touchStyle,
+                            therapist_preference: preferencesToSave.therapistPreference,
+                            session_location: preferencesToSave.sessionLocation,
+                            preferred_time: preferencesToSave.preferredTime,
+                            conversation_style: preferencesToSave.conversationStyle,
+                            additional_notes: preferencesToSave.additionalNotes,
+                            scent_preferences: preferencesToSave.scentPreferences,
+                        }
+                    ]);
+                
+                if (error) {
+                    console.error("Error saving session data:", error);
+                }
+            }
+        };
+
+        if (currentStep === 'complete') {
+            saveSessionData();
+        }
+    }, [currentStep, userPreferences]);
 
     const processAndSendMessage = async (content: string) => {
         addMessage({ sender: "user", content });
