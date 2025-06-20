@@ -292,9 +292,9 @@ export default function TherapeuticScentsApp() {
           >
             Your journey to relaxation and well-being is just a conversation away. Let our AI assistant guide you to the perfect therapy session.
           </motion.p>
-          <motion.div
+              <motion.div
             initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+                whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             <Button
@@ -304,10 +304,10 @@ export default function TherapeuticScentsApp() {
             >
               Chat with Our AI Assistant <MessageCircle className="ml-2 h-5 w-5" />
             </Button>
-          </motion.div>
+              </motion.div>
         </div>
       </section>
-      
+
       {/* Footer */}
       <footer className="bg-stone-900 text-stone-400 py-8">
         <div className="max-w-6xl mx-auto px-4 text-center text-sm">

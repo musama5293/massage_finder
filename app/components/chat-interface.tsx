@@ -3,10 +3,27 @@
 import React, { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowUp, Check, Star, MessageCircle, Clock } from "lucide-react"
+import { ArrowUp, Check, Star, MessageCircle, Clock, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAppStore } from "../store/use-app-store"
 import { supabase } from "@/lib/supabaseClient"
+
+// Helper function to validate phone numbers
+const isValidPhoneNumber = (input: string): boolean => {
+  // Remove common phone number formatting characters
+  const cleaned = input.replace(/[\s\-\(\)\.]/g, '');
+  // Check if it's a reasonable phone number (at least 8 digits, all numeric with possible + prefix)
+  return /^\+?\d{8,15}$/.test(cleaned);
+}
+
+// Helper function to validate contact info (ONLY phone numbers)
+const isValidContactInfo = (input: string): boolean => {
+  // Normalize input
+  const trimmed = input.trim();
+  
+  // Only accept valid phone numbers
+  return isValidPhoneNumber(trimmed);
+}
 
 const preferenceLabels: { [key: string]: string } = {
   mood: "Current Mood",
@@ -84,9 +101,10 @@ export default function ChatInterface() {
     updateUserPreferences,
     setCurrentStep,
     setIsTyping,
-        setRecommendedTherapist,
-        toggleResearchModal,
-        resetChat,
+    setRecommendedTherapist,
+    toggleResearchModal,
+    resetChat,
+    closeChat,
   } = useAppStore()
 
   const scrollToBottom = () => {
@@ -100,6 +118,13 @@ export default function ChatInterface() {
             setIsTyping(true);
             await new Promise(resolve => setTimeout(resolve, 2000));
             setIsTyping(false);
+
+            // Make sure we have contact info before proceeding
+            if (!userPreferences.contactInfo) {
+                addMessage({ sender: 'ai', content: "To connect you with the perfect therapist, please provide your phone number so we can reach you." });
+                setCurrentStep('q8_contact_info');
+                return;
+            }
 
             const therapists = [
                 { 
@@ -117,7 +142,7 @@ export default function ChatInterface() {
 
             addMessage({ sender: 'ai', content: "Based on your preferences, here's a therapist we recommend for you:" });
             addMessage({ sender: 'ai', content: '', therapistInfo: therapistData });
-            addMessage({ sender: 'ai', content: "A representative will be calling you shortly to coordinate." });
+            addMessage({ sender: 'ai', content: `A representative will be calling you shortly at ${userPreferences.contactInfo} to coordinate.` });
             setCurrentStep('complete');
         };
 
@@ -129,28 +154,34 @@ export default function ChatInterface() {
     useEffect(() => {
         const saveSessionData = async () => {
             if (userPreferences.hasAgreed) {
-                const { hasAgreed, ...preferencesToSave } = userPreferences;
-
-                const { data, error } = await supabase
-                    .from('sessions')
-                    .insert([
-                        { 
-                            session_id: preferencesToSave.sessionId,
-                            mood: preferencesToSave.mood,
-                            brings_here_today: preferencesToSave.bringsHereToday,
-                            treatment_matters: preferencesToSave.treatmentMatters,
-                            touch_style: preferencesToSave.touchStyle,
-                            therapist_preference: preferencesToSave.therapistPreference,
-                            session_location: preferencesToSave.sessionLocation,
-                            preferred_time: preferencesToSave.preferredTime,
-                            conversation_style: preferencesToSave.conversationStyle,
-                            additional_notes: preferencesToSave.additionalNotes,
-                            scent_preferences: preferencesToSave.scentPreferences,
-                        }
-                    ]);
-                
-                if (error) {
-                    console.error("Error saving session data:", error);
+                try {
+                    const { hasAgreed, ...preferencesToSave } = userPreferences;
+                    
+                    const { data, error } = await supabase
+                        .from('sessions')
+                        .insert([
+                            { 
+                                session_id: preferencesToSave.sessionId,
+                                mood: preferencesToSave.mood,
+                                brings_here_today: preferencesToSave.bringsHereToday,
+                                treatment_matters: preferencesToSave.treatmentMatters,
+                                touch_style: preferencesToSave.touchStyle,
+                                therapist_preference: preferencesToSave.therapistPreference,
+                                session_location: preferencesToSave.sessionLocation,
+                                preferred_time: preferencesToSave.preferredTime,
+                                conversation_style: preferencesToSave.conversationStyle,
+                                additional_notes: preferencesToSave.additionalNotes,
+                                scent_preferences: preferencesToSave.scentPreferences,
+                            }
+                        ]);
+                    
+                    if (error) {
+                        console.error("Error saving session data:", error);
+                    } else {
+                        console.log("Session data saved successfully");
+                    }
+                } catch (err) {
+                    console.error("Exception when saving session data:", err);
                 }
             }
         };
@@ -258,7 +289,7 @@ export default function ChatInterface() {
             case 'q2_experience_interest':
                 if (lowerCaseInput.includes('yes')) {
                     updateUserPreferences({ wantsToExperience: true });
-                    addMessage({ sender: 'ai', content: "Excellent! A representative will call you shortly. What is your WhatsApp or Telegram?" });
+                    addMessage({ sender: 'ai', content: "Excellent! A representative will call you shortly. What is your phone number?" });
                     setCurrentStep('q2_contact');
                 } else {
                     updateUserPreferences({ wantsToExperience: false });
@@ -268,19 +299,46 @@ export default function ChatInterface() {
                 break;
 
             case 'q2_contact':
-                updateUserPreferences({ contactInfo: userInput });
+                // Validate contact info (phone or messaging handle)
+                const contactInfo = userInput.trim();
+                if (!contactInfo || !isValidContactInfo(contactInfo)) {
+                    addMessage({ 
+                        sender: 'ai', 
+                        content: "Please provide a valid phone number with 8-15 digits. For example: +1234567890 or 1234567890" 
+                    });
+                    return;
+                }
+                updateUserPreferences({ contactInfo });
                 addMessage({ sender: 'ai', content: "Thank you! We'll be in touch shortly." });
                 setCurrentStep('complete');
                 break;
 
             case 'q3_contact':
-                updateUserPreferences({ contactInfo: userInput });
+                // Validate contact info (phone or messaging handle)
+                const therapistContactInfo = userInput.trim();
+                if (!therapistContactInfo || !isValidContactInfo(therapistContactInfo)) {
+                    addMessage({ 
+                        sender: 'ai', 
+                        content: "Please provide a valid phone number with 8-15 digits. For example: +1234567890 or 1234567890" 
+                    });
+                    return;
+                }
+                updateUserPreferences({ contactInfo: therapistContactInfo });
                 addMessage({ sender: 'ai', content: "Got it. A representative will contact you soon. Thank you!" });
                 setCurrentStep('complete');
                 break;
 
             case 'q3_consult_contact':
-                updateUserPreferences({ contactInfo: userInput });
+                // Validate contact info (phone or messaging handle)
+                const consultContactInfo = userInput.trim();
+                if (!consultContactInfo || !isValidContactInfo(consultContactInfo)) {
+                    addMessage({ 
+                        sender: 'ai', 
+                        content: "Please provide a valid phone number with 8-15 digits. For example: +1234567890 or 1234567890" 
+                    });
+                    return;
+                }
+                updateUserPreferences({ contactInfo: consultContactInfo });
                 addMessage({ sender: 'ai', content: "Perfect. We will reach out on your preferred platform. Talk soon!" });
                 setCurrentStep('complete');
                 break;
@@ -292,11 +350,11 @@ export default function ChatInterface() {
                 } else if (lowerCaseInput.includes('therapist') || lowerCaseInput.includes('trainee')) {
                     const userType = lowerCaseInput.includes('therapist') ? 'therapist' : 'trainee';
                     updateUserPreferences({ bringsHereToday: userType });
-                    addMessage({ sender: 'ai', content: "Wonderful. Please provide your mobile phone or Telegram, and a representative will call you. Is there a specific time of the day you prefer?" });
+                    addMessage({ sender: 'ai', content: "Wonderful. Please provide your mobile phone number, and a representative will call you. Is there a specific time of the day you prefer?" });
                     setCurrentStep('q3_contact');
                 } else if (lowerCaseInput.includes('consult')) {
                     updateUserPreferences({ bringsHereToday: 'consult' });
-                    addMessage({ sender: 'ai', content: "I understand. Let's move this to a more private chat. Do you prefer Telegram or WhatsApp?" });
+                    addMessage({ sender: 'ai', content: "I understand. Let's move this to a more private chat. Please provide your phone number so we can reach you." });
                     setCurrentStep('q3_consult_contact');
                 } else {
                     updateUserPreferences({ bringsHereToday: 'massage' });
@@ -394,6 +452,22 @@ export default function ChatInterface() {
             case 'q8_agreement':
                 updateUserPreferences({ hasAgreed: true });
                 addMessage({ sender: 'ai', content: "Thanks for making us better!" });
+                addMessage({ sender: 'ai', content: "To connect you with the perfect therapist, please provide your phone number so we can reach you." });
+                setCurrentStep('q8_contact_info');
+                break;
+                
+            case 'q8_contact_info':
+                // Validate contact info (phone number)
+                const finalContactInfo = userInput.trim();
+                if (!finalContactInfo || !isValidContactInfo(finalContactInfo)) {
+                    addMessage({ 
+                        sender: 'ai', 
+                        content: "Please provide a valid phone number with 8-15 digits. For example: +1234567890 or 1234567890" 
+                    });
+                    return;
+                }
+                updateUserPreferences({ contactInfo: finalContactInfo });
+                addMessage({ sender: 'ai', content: "Thank you! We'll now find the perfect therapist for you." });
                 setCurrentStep('final_recommendation');
                 break;
 
@@ -406,15 +480,30 @@ export default function ChatInterface() {
                 break;
 
             default:
-                addMessage({ sender: 'ai', content: "I'm sorry, I didn't quite understand that. I'm still in training and learning new things every day!" });
-      addMessage({
-                    sender: 'ai',
-                    content: "Oops, Tomer didn't prepare me for that one lol. I am a generative AI personal assistant. Could you please answer again?",
-                });
-                // Re-ask the last question to prevent a hard loop
-                const lastAiMessage = [...messages].reverse().find(m => m.sender === 'ai');
-                if (lastAiMessage) {
-                    addMessage({ sender: 'ai', content: lastAiMessage.content, options: lastAiMessage.options, multiChoiceOptions: (lastAiMessage as any).multiChoiceOptions });
+                addMessage({ sender: 'ai', content: "I didn't quite understand your response. Let me help you with a more specific question." });
+                
+                // Re-ask the last question with more guidance based on the current step
+                const lastAiMessage = [...messages].reverse().find(m => m.sender === 'ai' && (m.options || m.multiChoiceOptions));
+                
+                if (currentStep.includes('contact')) {
+                    addMessage({ 
+                        sender: 'ai', 
+                        content: "Please provide a valid phone number with 8-15 digits. For example: +1234567890 or 1234567890"
+                    });
+                } else if (lastAiMessage) {
+                    // Re-display the last question with options
+                    addMessage({ 
+                        sender: 'ai', 
+                        content: "Please select from the available options or provide a clear response:", 
+                        options: lastAiMessage.options, 
+                        multiChoiceOptions: (lastAiMessage as any).multiChoiceOptions 
+                    });
+                } else {
+                    // Generic fallback if we can't determine the context
+                    addMessage({ 
+                        sender: 'ai', 
+                        content: "Let's try again. Please provide a clear response to the question."
+                    });
                 }
                 break;
         }
@@ -424,9 +513,18 @@ export default function ChatInterface() {
 
   return (
         <div className="flex flex-col h-screen bg-white">
-            <header className="p-4 border-b border-gray-200">
+            <header className="p-4 border-b border-gray-200 flex justify-between items-center">
                 <h1 className="text-xl font-semibold text-gray-800">Your AI Assistant</h1>
-        </header>
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={closeChat} 
+                    className="rounded-full hover:bg-gray-100"
+                    aria-label="Close chat"
+                >
+                    <X className="h-5 w-5 text-gray-500" />
+                </Button>
+            </header>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 <AnimatePresence initial={false}>

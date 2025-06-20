@@ -68,8 +68,10 @@ interface AppState {
   sessionId: string
   recommendedTherapist: any | null
   showResearchModal: boolean
+  messageIdCounter: number
   // Actions
   startChat: () => void
+  closeChat: () => void
   addMessage: (message: Omit<Message, "id" | "timestamp">) => void
   updateUserPreferences: (preferences: Partial<UserPreferences>) => void
   setCurrentStep: (step: string) => void
@@ -89,9 +91,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   sessionId: '',
   recommendedTherapist: null,
   showResearchModal: false,
+  messageIdCounter: 0,
 
   // Actions
   startChat: () => {
+    // Generate a text-based session ID with timestamp
     const sessionId = `session_${Date.now()}`
     set({
       showChat: true,
@@ -99,6 +103,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       userPreferences: { sessionId },
       messages: [],
       currentStep: "welcome",
+      messageIdCounter: 0,
     })
 
     get().addMessage({
@@ -124,12 +129,16 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   addMessage: (message) =>
-    set((state) => ({
+    set((state) => {
+      const nextId = state.messageIdCounter + 1;
+      return {
       messages: [
         ...state.messages,
-        { ...message, id: Date.now(), timestamp: new Date() },
-      ],
-    })),
+          { ...message, id: nextId, timestamp: new Date() },
+        ],
+        messageIdCounter: nextId,
+      };
+    }),
 
   updateUserPreferences: (preferences) =>
     set((state) => ({
@@ -139,7 +148,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   setCurrentStep: (step) => set({ currentStep: step }),
 
   setIsTyping: (typing) => set({ isTyping: typing }),
-  
+
   setRecommendedTherapist: (therapist) => set({ recommendedTherapist: therapist }),
   
   toggleResearchModal: () => set((state) => ({ showResearchModal: !state.showResearchModal })),
@@ -150,5 +159,10 @@ export const useAppStore = create<AppState>((set, get) => ({
     showChat: false,
     userPreferences: {},
     sessionId: '',
+    messageIdCounter: 0,
+  }),
+  
+  closeChat: () => set({
+    showChat: false,
   }),
 }))
