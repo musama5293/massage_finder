@@ -56,32 +56,32 @@ const TherapistCard = ({ therapist }: { therapist: any }) => {
         : "/ChatGPT Image Jun Woman -MAN.png";
         
     return (
-        <div className="bg-white rounded-2xl shadow-lg w-full max-w-sm">
-            <div className="p-5">
-                <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-teal-100 flex-shrink-0 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-lg w-full max-w-sm mx-auto">
+            <div className="p-4 md:p-5">
+                <div className="flex items-center gap-3 md:gap-4">
+                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-teal-100 flex-shrink-0 overflow-hidden">
                         <img src={therapistImage} alt={therapist.name} className="w-full h-full object-cover" />
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-start">
-                            <h3 className="font-bold text-lg text-gray-800">{therapist.name}</h3>
-                            <span className="text-xs font-semibold text-green-600 bg-green-100 px-2 py-1 rounded-md">{therapist.experience}</span>
+                            <h3 className="font-bold text-base md:text-lg text-gray-800 truncate">{therapist.name}</h3>
+                            <span className="text-xs font-semibold text-green-600 bg-green-100 px-2 py-1 rounded-md whitespace-nowrap ml-2">{therapist.experience}</span>
                         </div>
                         <div className="flex items-center gap-2 mt-1">
-                             <Clock className="h-4 w-4 text-gray-400" />
-                             <p className="text-sm text-gray-600">{therapist.availability}</p>
+                             <Clock className="h-3 w-3 md:h-4 md:w-4 text-gray-400 flex-shrink-0" />
+                             <p className="text-xs md:text-sm text-gray-600 truncate">{therapist.availability}</p>
                         </div>
                     </div>
                 </div>
-                <p className="text-sm text-gray-600 mt-4 pl-1">{therapist.specialties}</p>
-                <div className="flex items-center justify-between mt-4">
+                <p className="text-xs md:text-sm text-gray-600 mt-3 md:mt-4 pl-1 line-clamp-2">{therapist.specialties}</p>
+                <div className="flex items-center justify-between mt-3 md:mt-4">
                     <div className="flex items-center gap-1">
-                        <Star className="h-5 w-5 text-amber-400 fill-amber-400" />
-                        <span className="font-bold text-gray-700">{therapist.rating}</span>
-                        <span className="text-sm text-gray-500">({therapist.reviewCount} reviews)</span>
+                        <Star className="h-4 w-4 md:h-5 md:w-5 text-amber-400 fill-amber-400" />
+                        <span className="font-bold text-sm md:text-base text-gray-700">{therapist.rating}</span>
+                        <span className="text-xs md:text-sm text-gray-500">({therapist.reviewCount} reviews)</span>
                     </div>
-                    <Button size="sm" className="bg-teal-600 hover:bg-teal-700 text-white rounded-full px-4">
-                        <MessageCircle className="h-4 w-4 mr-2" />
+                    <Button size="sm" className="bg-teal-600 hover:bg-teal-700 text-white rounded-full px-3 md:px-4 text-xs md:text-sm">
+                        <MessageCircle className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                         Chat Privately
                     </Button>
                 </div>
@@ -731,8 +731,8 @@ export default function ChatInterface() {
 
   return (
         <div className="flex flex-col h-screen bg-white">
-            <header className="p-4 border-b border-gray-200 flex justify-between items-center">
-                <h1 className="text-xl font-semibold text-gray-800">Your AI Assistant</h1>
+            <header className="p-3 md:p-4 border-b border-gray-200 flex justify-between items-center">
+                <h1 className="text-lg md:text-xl font-semibold text-gray-800">Your AI Assistant</h1>
                 <Button 
                     variant="ghost" 
                     size="icon" 
@@ -740,11 +740,11 @@ export default function ChatInterface() {
                     className="rounded-full hover:bg-gray-100"
                     aria-label="Close chat"
                 >
-                    <X className="h-5 w-5 text-gray-500" />
+                    <X className="h-4 w-4 md:h-5 md:w-5 text-gray-500" />
                 </Button>
             </header>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4">
                 <AnimatePresence initial={false}>
                     {messages.map((message) => (
                 <motion.div
@@ -755,13 +755,13 @@ export default function ChatInterface() {
                             layout
                             className={`flex items-end gap-2 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                         >
-                            {message.sender === 'ai' && <div className="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0" />}
-                            <div className={`max-w-[75%] rounded-2xl px-4 py-3 ${message.sender === 'user' ? 'bg-cyan-600 text-white rounded-br-none' : 'bg-gray-200 text-gray-800 rounded-bl-none'}`}>
+                            {message.sender === 'ai' && <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gray-300 flex-shrink-0" />}
+                            <div className={`max-w-[85%] sm:max-w-[75%] rounded-2xl px-3 md:px-4 py-2 md:py-3 ${message.sender === 'user' ? 'bg-cyan-600 text-white rounded-br-none' : 'bg-gray-200 text-gray-800 rounded-bl-none'}`}>
                                 {message.therapistInfo ? (
                                     <TherapistCard therapist={message.therapistInfo} />
                                 ) : (
                                     <div className="relative group">
-                                        <p className="text-base" style={{
+                                        <p className="text-sm md:text-base leading-relaxed" style={{
                                           WebkitUserSelect: "text",
                                           MozUserSelect: "text",
                                           msUserSelect: "text",
@@ -922,25 +922,25 @@ export default function ChatInterface() {
             <div ref={messagesEndRef} />
           </div>
 
-            <div className="p-4 border-t border-gray-200">
+            <div className="p-3 md:p-4 border-t border-gray-200">
                 {lastMessage?.multiChoiceOptions && !isTyping && (
                     <div className="mb-2 flex flex-col items-start gap-2">
                         <div className="flex flex-wrap gap-2">
                             {lastMessage.multiChoiceOptions.map((option: string) => (
-                                <button key={option} onClick={() => handleMultiChoice(option)} className={`flex items-center gap-2 text-base px-4 py-2 rounded-full border-2 transition-all shadow-md ${selectedMultiChoice.includes(option) ? 'bg-cyan-600 text-white border-cyan-700' : 'bg-white text-cyan-700 border-cyan-600 hover:bg-gray-50'}`}>
-                                    {selectedMultiChoice.includes(option) && <Check className="h-4 w-4" />}
+                                <button key={option} onClick={() => handleMultiChoice(option)} className={`flex items-center gap-2 text-sm md:text-base px-3 md:px-4 py-2 rounded-full border-2 transition-all shadow-md ${selectedMultiChoice.includes(option) ? 'bg-cyan-600 text-white border-cyan-700' : 'bg-white text-cyan-700 border-cyan-600 hover:bg-gray-50'}`}>
+                                    {selectedMultiChoice.includes(option) && <Check className="h-3 w-3 md:h-4 md:w-4" />}
                                     {option}
                                 </button>
                             ))}
                         </div>
-                        <Button onClick={submitMultiChoice} disabled={selectedMultiChoice.length === 0} size="sm" className="mt-2 bg-cyan-600 hover:bg-cyan-700 text-white font-medium text-base">Continue</Button>
+                        <Button onClick={submitMultiChoice} disabled={selectedMultiChoice.length === 0} size="sm" className="mt-2 bg-cyan-600 hover:bg-cyan-700 text-white font-medium text-sm md:text-base">Continue</Button>
                     </div>
                 )}
                 
                 {lastMessage?.options && !isTyping && (
                     <div className="mb-2 flex flex-wrap gap-2">
                         {lastMessage.options.map((option: string) => (
-                            <button key={option} onClick={() => handleOptionClick(option)} className="bg-cyan-600 text-white text-base px-4 py-2 rounded-full border border-cyan-700 hover:bg-cyan-700 transition-all font-medium shadow-md">
+                            <button key={option} onClick={() => handleOptionClick(option)} className="bg-cyan-600 text-white text-sm md:text-base px-3 md:px-4 py-2 rounded-full border border-cyan-700 hover:bg-cyan-700 transition-all font-medium shadow-md">
                                 {option}
                             </button>
                         ))}
@@ -953,11 +953,11 @@ export default function ChatInterface() {
                 onChange={(e) => setInputValue(e.target.value)}
                         onKeyPress={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleTextInputSend(); } }}
                 placeholder="Type your message..."
-                        className="w-full bg-gray-100 border-gray-300 rounded-2xl p-3 pr-12 resize-none text-base focus:ring-cyan-500 focus:border-cyan-500"
+                        className="w-full bg-gray-100 border-gray-300 rounded-2xl p-3 pr-12 resize-none text-sm md:text-base focus:ring-cyan-500 focus:border-cyan-500"
                 rows={1}
                     />
-                    <Button onClick={handleTextInputSend} disabled={!inputValue.trim() || isTyping} size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-cyan-600 hover:bg-cyan-700 rounded-full">
-                        <ArrowUp className="h-4 w-4" />
+                    <Button onClick={handleTextInputSend} disabled={!inputValue.trim() || isTyping} size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 md:h-8 md:w-8 bg-cyan-600 hover:bg-cyan-700 rounded-full">
+                        <ArrowUp className="h-3 w-3 md:h-4 md:w-4" />
               </Button>
             </div>
           </div>
