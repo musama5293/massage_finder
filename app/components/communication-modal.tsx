@@ -54,7 +54,7 @@ export default function CommunicationModal({ isOpen, setIsOpen }: { isOpen: bool
         setMessage("")
         setSubmitted(false)
         setIsOpen(false)
-      }, 3000)
+      }, 4000) // Give users 4 seconds to read the success message
     } catch (err) {
       console.error("Exception when submitting contact form:", err);
       setError("An unexpected error occurred. Please try again.");
@@ -66,43 +66,44 @@ export default function CommunicationModal({ isOpen, setIsOpen }: { isOpen: bool
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Contact Us</DialogTitle>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setIsOpen(false)} 
-            className="absolute right-4 top-4"
-          >
-            <X className="h-4 w-4" />
-          </Button>
+          <DialogTitle className="text-2xl font-bold">Contact Us</DialogTitle>
         </DialogHeader>
         
         {submitted ? (
           <div className="py-6 text-center">
-            <h3 className="text-lg font-medium text-green-600 mb-2">Message Sent!</h3>
-            <p className="text-gray-600">We'll get back to you shortly.</p>
+            <div className="flex justify-center mb-4">
+              <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+            <h3 className="text-xl font-medium text-green-600 mb-2">Message Sent!</h3>
+            <p className="text-base text-gray-600">We'll get back to you shortly.</p>
+            <p className="text-sm text-gray-500 mt-4">This window will close automatically...</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 py-4">
             {error && (
-              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm">
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-base">
                 {error}
               </div>
             )}
             
             <div>
-              <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
+              <label htmlFor="name" className="block text-base font-medium mb-1">Name</label>
               <Input 
                 id="name" 
                 value={name} 
                 onChange={(e) => setName(e.target.value)} 
                 placeholder="Your name" 
                 required 
+                className="text-base"
               />
             </div>
             
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+              <label htmlFor="email" className="block text-base font-medium mb-1">Email</label>
               <Input 
                 id="email" 
                 type="email" 
@@ -110,21 +111,23 @@ export default function CommunicationModal({ isOpen, setIsOpen }: { isOpen: bool
                 onChange={(e) => setEmail(e.target.value)} 
                 placeholder="your@email.com" 
                 required 
+                className="text-base"
               />
             </div>
             
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium mb-1">Phone (optional)</label>
+              <label htmlFor="phone" className="block text-base font-medium mb-1">Phone (optional)</label>
               <Input 
                 id="phone" 
                 value={phone} 
                 onChange={(e) => setPhone(e.target.value)} 
                 placeholder="Your phone number" 
+                className="text-base"
               />
             </div>
             
             <div>
-              <label htmlFor="message" className="block text-sm font-medium mb-1">Message</label>
+              <label htmlFor="message" className="block text-base font-medium mb-1">Message</label>
               <Textarea 
                 id="message" 
                 value={message} 
@@ -132,13 +135,14 @@ export default function CommunicationModal({ isOpen, setIsOpen }: { isOpen: bool
                 placeholder="How can we help you?" 
                 rows={4} 
                 required 
+                className="text-base"
               />
             </div>
             
             <DialogFooter>
               <Button 
                 type="submit" 
-                className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+                className="w-full bg-teal-600 hover:bg-teal-700 text-white text-base py-2"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
