@@ -761,7 +761,7 @@ export default function ChatInterface() {
                                     <TherapistCard therapist={message.therapistInfo} />
                                 ) : (
                                     <div className="relative group">
-                                        <p className="text-sm" style={{
+                                        <p className="text-base" style={{
                                           WebkitUserSelect: "text",
                                           MozUserSelect: "text",
                                           msUserSelect: "text",
@@ -927,20 +927,20 @@ export default function ChatInterface() {
                     <div className="mb-2 flex flex-col items-start gap-2">
                         <div className="flex flex-wrap gap-2">
                             {lastMessage.multiChoiceOptions.map((option: string) => (
-                                <button key={option} onClick={() => handleMultiChoice(option)} className={`flex items-center gap-2 text-sm px-4 py-2 rounded-full border-2 transition-all shadow-md ${selectedMultiChoice.includes(option) ? 'bg-cyan-600 text-white border-cyan-700' : 'bg-white text-cyan-700 border-cyan-600 hover:bg-gray-50'}`}>
+                                <button key={option} onClick={() => handleMultiChoice(option)} className={`flex items-center gap-2 text-base px-4 py-2 rounded-full border-2 transition-all shadow-md ${selectedMultiChoice.includes(option) ? 'bg-cyan-600 text-white border-cyan-700' : 'bg-white text-cyan-700 border-cyan-600 hover:bg-gray-50'}`}>
                                     {selectedMultiChoice.includes(option) && <Check className="h-4 w-4" />}
                                     {option}
                                 </button>
                             ))}
                         </div>
-                        <Button onClick={submitMultiChoice} disabled={selectedMultiChoice.length === 0} size="sm" className="mt-2 bg-cyan-600 hover:bg-cyan-700 text-white font-medium">Continue</Button>
+                        <Button onClick={submitMultiChoice} disabled={selectedMultiChoice.length === 0} size="sm" className="mt-2 bg-cyan-600 hover:bg-cyan-700 text-white font-medium text-base">Continue</Button>
                     </div>
                 )}
                 
                 {lastMessage?.options && !isTyping && (
                     <div className="mb-2 flex flex-wrap gap-2">
                         {lastMessage.options.map((option: string) => (
-                            <button key={option} onClick={() => handleOptionClick(option)} className="bg-cyan-600 text-white text-sm px-4 py-2 rounded-full border border-cyan-700 hover:bg-cyan-700 transition-all font-medium shadow-md">
+                            <button key={option} onClick={() => handleOptionClick(option)} className="bg-cyan-600 text-white text-base px-4 py-2 rounded-full border border-cyan-700 hover:bg-cyan-700 transition-all font-medium shadow-md">
                                 {option}
                             </button>
                         ))}
@@ -953,7 +953,7 @@ export default function ChatInterface() {
                 onChange={(e) => setInputValue(e.target.value)}
                         onKeyPress={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleTextInputSend(); } }}
                 placeholder="Type your message..."
-                        className="w-full bg-gray-100 border-gray-300 rounded-2xl p-3 pr-12 resize-none text-sm focus:ring-cyan-500 focus:border-cyan-500"
+                        className="w-full bg-gray-100 border-gray-300 rounded-2xl p-3 pr-12 resize-none text-base focus:ring-cyan-500 focus:border-cyan-500"
                 rows={1}
                     />
                     <Button onClick={handleTextInputSend} disabled={!inputValue.trim() || isTyping} size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-cyan-600 hover:bg-cyan-700 rounded-full">
