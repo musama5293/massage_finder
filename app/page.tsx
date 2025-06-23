@@ -1,7 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Play, MessageCircle, Star, CheckCircle, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
+import { Play, MessageCircle, Star, CheckCircle, ArrowRight, ChevronLeft, ChevronRight, Brain } from "lucide-react"
 import { motion } from "framer-motion"
 import { useState } from "react"
 import { useAppStore } from "./store/use-app-store"
@@ -11,6 +11,7 @@ import CommunicationModal from "./components/communication-modal"
 export default function TherapeuticScentsApp() {
   const { showChat, startChat } = useAppStore()
   const [currentArticle, setCurrentArticle] = useState(0)
+  const [contactModalOpen, setContactModalOpen] = useState(false)
 
   // Carousel articles data
   const articles = [
@@ -48,11 +49,15 @@ export default function TherapeuticScentsApp() {
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-800">
-      <CommunicationModal />
+      <CommunicationModal isOpen={contactModalOpen} setIsOpen={setContactModalOpen} />
       {/* Header */}
       <header className="relative z-50 flex items-center justify-between p-4 md:p-6">
         <div className="text-xl md:text-2xl font-bold text-stone-900">Therapeutic Scents™</div>
-        <Button variant="outline" className="border-teal-600 text-teal-700 hover:bg-teal-600 hover:text-white">
+        <Button 
+          variant="outline" 
+          className="border-teal-600 text-teal-700 hover:bg-teal-600 hover:text-white"
+          onClick={() => setContactModalOpen(true)}
+        >
           Contact
         </Button>
       </header>
@@ -86,7 +91,8 @@ export default function TherapeuticScentsApp() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-xl md:text-2xl mb-8 text-white drop-shadow-lg"
           >
-            Book Personalized Massage Therapy with AI-Driven Scent Matching
+            Using Therapeutic Scent™<br />
+            Book Personalized Massage Therapy with AI Driven Science Based Aromatherapy to boost your therapy.
           </motion.p>
 
           <motion.div
@@ -135,10 +141,10 @@ export default function TherapeuticScentsApp() {
                   "Tell our AI about your wellness needs, scent preferences, and therapy goals through an intuitive chat interface.",
               },
               {
-                icon: <Star className="h-12 w-12 text-teal-700" />,
+                icon: <Brain className="h-12 w-12 text-teal-700" />,
                 title: "Smart Matching",
                 description:
-                  "Our algorithm analyzes your preferences to match you with certified therapists and personalized aromatherapy blends.",
+                  "Our advanced matching technology pairs you with a certified therapist and therapy that's right for you, plus a personalized science-based aromatherapy blend designed to enhance your therapeutic goals",
               },
               {
                 icon: <CheckCircle className="h-12 w-12 text-teal-700" />,
@@ -185,7 +191,7 @@ export default function TherapeuticScentsApp() {
             transition={{ duration: 0.6 }}
             className="text-3xl md:text-5xl font-bold text-center mb-16 text-stone-900"
           >
-            What the science says
+            What Science Says
           </motion.h2>
 
           <motion.div
@@ -311,7 +317,7 @@ export default function TherapeuticScentsApp() {
       {/* Footer */}
       <footer className="bg-stone-900 text-stone-400 py-8">
         <div className="max-w-6xl mx-auto px-4 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} Therapeutic Scents. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Therapeutic Scents™. All rights reserved to Tomer Massage Group. If you want to join our group, contact +972547451527</p>
           <p className="mt-2">This service is intended for wellness purposes and does not constitute medical advice.</p>
         </div>
       </footer>

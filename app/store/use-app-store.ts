@@ -48,12 +48,16 @@ interface UserPreferences {
   touchStyle?: string
   therapistPreference?: string
   sessionLocation?: string
+  locationLive?: string
   preferredTime?: string
   conversationStyle?: string
   // Q6
   additionalNotes?: string
   // Q7
+  wantsScentInfo?: boolean
   scentPreferences?: string
+  // Q9
+  experienceRating?: number
   // Session data
   sessionId?: string
   hasAgreed?: boolean
