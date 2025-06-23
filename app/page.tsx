@@ -1,12 +1,13 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Play, MessageCircle, Star, CheckCircle, ArrowRight, ChevronLeft, ChevronRight, Brain } from "lucide-react"
-import { motion } from "framer-motion"
-import { useState } from "react"
+import { Play, MessageCircle, Star, CheckCircle, ArrowRight, ChevronLeft, ChevronRight, Brain, X } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect } from "react"
 import { useAppStore } from "./store/use-app-store"
 import ChatInterface from "./components/chat-interface"
 import CommunicationModal from "./components/communication-modal"
+import Head from "next/head"
 
 export default function TherapeuticScentsApp() {
   const { showChat, startChat } = useAppStore()
@@ -49,6 +50,11 @@ export default function TherapeuticScentsApp() {
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-800">
+      <Head>
+        <title>Therapeutic Scents</title>
+        <meta name="description" content="AI-Powered Massage Therapy to reduce stress & improve sleep quality using therapeutic scents inspired by science." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
       <CommunicationModal isOpen={contactModalOpen} setIsOpen={setContactModalOpen} />
       {/* Header */}
       <header className="relative z-50 flex items-center justify-between p-4 md:p-6">
@@ -63,7 +69,7 @@ export default function TherapeuticScentsApp() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[80vh] md:h-[90vh] flex items-center justify-center overflow-hidden">
         <video
           className="absolute inset-0 w-full h-full object-cover"
           autoPlay
@@ -74,12 +80,12 @@ export default function TherapeuticScentsApp() {
         />
         <div className="absolute inset-0 bg-black/40" />
 
-        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 text-white drop-shadow-lg"
+            className="hero-text font-bold leading-tight mb-4 md:mb-6 text-white drop-shadow-lg max-w-5xl mx-auto"
           >
             <span className="text-teal-300 drop-shadow-lg">AI-Powered</span> Massage Therapy to reduce stress & improve sleep quality
             using therapeutic scents <em className="italic">inspired by science.</em>
@@ -89,7 +95,7 @@ export default function TherapeuticScentsApp() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl mb-8 text-white drop-shadow-lg"
+            className="hero-subtitle mb-6 md:mb-8 text-white drop-shadow-lg max-w-4xl mx-auto"
           >
             Using Therapeutic Scent™<br />
             Book Personalized Massage Therapy with AI Driven Science Based Aromatherapy to boost your therapy.
@@ -103,9 +109,9 @@ export default function TherapeuticScentsApp() {
             <Button
               onClick={startChat}
               size="lg"
-              className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 text-lg rounded-full"
+              className="bg-teal-600 hover:bg-teal-700 text-white px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-full transition-all hover:scale-105"
             >
-              Start My Journey <ArrowRight className="ml-2 h-5 w-5" />
+              Start My Journey <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
             </Button>
           </motion.div>
         </div>
@@ -114,40 +120,40 @@ export default function TherapeuticScentsApp() {
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          className="absolute bottom-8 right-8 bg-white/20 backdrop-blur-sm rounded-full p-4 hover:bg-white/30 transition-all"
+          className="absolute bottom-4 right-4 md:bottom-8 md:right-8 bg-white/20 backdrop-blur-sm rounded-full p-3 md:p-4 hover:bg-white/30 transition-all"
         >
-          <Play className="h-8 w-8 text-white" />
+          <Play className="h-6 w-6 md:h-8 md:w-8 text-white" />
         </motion.button>
       </section>
 
       {/* How It Works Section */}
-      <section className="bg-white py-16 md:py-24">
-        <div className="max-w-6xl mx-auto px-4">
+      <section className="bg-white py-12 md:py-16 lg:py-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-3xl md:text-5xl font-bold text-center mb-16 text-stone-900"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 md:mb-16 text-stone-900"
           >
             How our smart system works
           </motion.h2>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-8 md:mb-12">
             {[
               {
-                icon: <MessageCircle className="h-12 w-12 text-teal-700" />,
+                icon: <MessageCircle className="h-10 w-10 md:h-12 md:w-12 text-teal-700" />,
                 title: "AI Chat Assessment",
                 description:
                   "Tell our AI about your wellness needs, scent preferences, and therapy goals through an intuitive chat interface.",
               },
               {
-                icon: <Brain className="h-12 w-12 text-teal-700" />,
+                icon: <Brain className="h-10 w-10 md:h-12 md:w-12 text-teal-700" />,
                 title: "Smart Matching",
                 description:
                   "Our advanced matching technology pairs you with a certified therapist and therapy that's right for you, plus a personalized science-based aromatherapy blend designed to enhance your therapeutic goals",
               },
               {
-                icon: <CheckCircle className="h-12 w-12 text-teal-700" />,
+                icon: <CheckCircle className="h-10 w-10 md:h-12 md:w-12 text-teal-700" />,
                 title: "Book & Relax",
                 description:
                   "Connect directly with your matched therapist via WhatsApp or Telegram and schedule your personalized session.",
@@ -160,11 +166,11 @@ export default function TherapeuticScentsApp() {
                 transition={{ duration: 0.6, delay: index * 0.2 }}
                 className="text-center"
               >
-                <div className="bg-teal-100/50 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                <div className="bg-teal-100/50 rounded-full w-20 h-20 md:w-24 md:h-24 flex items-center justify-center mx-auto mb-4 md:mb-6">
                   {step.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-4 text-stone-800">{step.title}</h3>
-                <p className="text-stone-600">{step.description}</p>
+                <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4 text-stone-800">{step.title}</h3>
+                <p className="text-sm md:text-base text-stone-600 leading-relaxed">{step.description}</p>
               </motion.div>
             ))}
           </div>
@@ -174,9 +180,9 @@ export default function TherapeuticScentsApp() {
               onClick={startChat}
               variant="outline"
               size="lg"
-              className="border-stone-800 text-stone-800 hover:bg-stone-800 hover:text-white px-8 py-4 text-lg rounded-full"
+              className="border-stone-800 text-stone-800 hover:bg-stone-800 hover:text-white px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-full transition-all hover:scale-105"
             >
-              Get Matches Now <ArrowRight className="ml-2 h-5 w-5" />
+              Get Matches Now <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
             </Button>
           </div>
         </div>
