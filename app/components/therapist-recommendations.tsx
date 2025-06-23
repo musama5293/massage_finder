@@ -57,7 +57,7 @@ export default function TherapistRecommendations() {
                           </div>
 
               <p className="text-white/80 text-sm mb-3 leading-relaxed">
-                {recommendedTherapist.specialties.replace('essential oils', 'ריחות טיפוליים מבוססי מדע')}
+                {recommendedTherapist.specialties.replace('science-based Therapeutic scent™', 'ריחות טיפוליים מבוססי מדע')}
               </p>
 
               <div className="flex items-center gap-4 mb-3">
