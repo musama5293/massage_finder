@@ -963,7 +963,7 @@ export default function ChatInterface() {
                         onChange={(e) => setInputValue(e.target.value)}
                                 onKeyPress={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleTextInputSend(); } }}
                         placeholder="Type your message..."
-                                className="w-full bg-gray-100 border-gray-300 rounded-2xl p-3 pr-12 resize-none text-sm md:text-base focus:ring-cyan-500 focus:border-cyan-500"
+                                className="w-full bg-gray-100 border-gray-300 rounded-2xl p-3 pr-12 resize-none text-base focus:ring-cyan-500 focus:border-cyan-500"
                         rows={1}
                             />
                             <Button onClick={handleTextInputSend} disabled={!inputValue.trim() || isTyping} size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 md:h-8 md:w-8 bg-cyan-600 hover:bg-cyan-700 rounded-full">
