@@ -730,238 +730,249 @@ export default function ChatInterface() {
     const lastMessage = messages[messages.length - 1];
 
   return (
-        <div className="flex flex-col h-screen bg-white">
-            <header className="p-3 md:p-4 border-b border-gray-200 flex justify-between items-center">
-                <h1 className="text-lg md:text-xl font-semibold text-gray-800">Your AI Assistant</h1>
-                <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={closeChat} 
-                    className="rounded-full hover:bg-gray-100"
-                    aria-label="Close chat"
-                >
-                    <X className="h-4 w-4 md:h-5 md:w-5 text-gray-500" />
-                </Button>
-            </header>
-
-            <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4">
-                <AnimatePresence initial={false}>
-                    {messages.map((message) => (
-                <motion.div
-                  key={message.id}
-                            initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0 }}
-                            layout
-                            className={`flex items-end gap-2 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                        >
-                            {message.sender === 'ai' && <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gray-300 flex-shrink-0" />}
-                            <div className={`max-w-[85%] sm:max-w-[75%] rounded-2xl px-3 md:px-4 py-2 md:py-3 ${message.sender === 'user' ? 'bg-cyan-600 text-white rounded-br-none' : 'bg-gray-200 text-gray-800 rounded-bl-none'}`}>
-                                {message.therapistInfo ? (
-                                    <TherapistCard therapist={message.therapistInfo} />
-                                ) : (
-                                    <div className="relative group">
-                                        <p className="text-sm md:text-base leading-relaxed" style={{
-                                          WebkitUserSelect: "text",
-                                          MozUserSelect: "text",
-                                          msUserSelect: "text",
-                                          userSelect: "text"
-                                        }} dangerouslySetInnerHTML={{ __html: message.content.replace(/\n/g, '<br />').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
-                                        
-                                        {message.content && (
-                                            <button 
-                                                onClick={() => {
-                                                    navigator.clipboard.writeText(message.content);
-                                                    
-                                                    // Create tooltip element for feedback
-                                                    const button = document.activeElement as HTMLElement;
-                                                    const rect = button.getBoundingClientRect();
-                                                    
-                                                    const tooltip = document.createElement('div');
-                                                    tooltip.innerText = 'Copied!';
-                                                    tooltip.style.position = 'fixed';
-                                                    tooltip.style.left = `${rect.left}px`;
-                                                    tooltip.style.top = `${rect.top - 30}px`;
-                                                    tooltip.style.backgroundColor = '#10b981';
-                                                    tooltip.style.color = 'white';
-                                                    tooltip.style.padding = '4px 8px';
-                                                    tooltip.style.borderRadius = '4px';
-                                                    tooltip.style.fontSize = '12px';
-                                                    tooltip.style.fontWeight = 'bold';
-                                                    tooltip.style.zIndex = '9999';
-                                                    tooltip.style.opacity = '0';
-                                                    tooltip.style.transition = 'opacity 0.2s ease-in-out';
-                                                    
-                                                    document.body.appendChild(tooltip);
-                                                    
-                                                    // Animate tooltip
-                                                    setTimeout(() => {
-                                                        tooltip.style.opacity = '1';
-                                                    }, 10);
-                                                    
-                                                    setTimeout(() => {
+        <div className="relative h-screen">
+            {/* Background Image */}
+            <div 
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url('/ChatGPT Image Jun MAN-MAN BACKROUND.png')` }}
+            />
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-white/20" />
+    
+            {/* Chat Content */}
+            <div className="relative flex flex-col h-full">
+                <header className="p-3 md:p-4 border-b border-gray-200/80 flex justify-between items-center bg-white/80 shrink-0">
+                    <h1 className="text-lg md:text-xl font-semibold text-gray-800">Your AI Assistant</h1>
+                    <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={closeChat} 
+                        className="rounded-full hover:bg-gray-100"
+                        aria-label="Close chat"
+                    >
+                        <X className="h-4 w-4 md:h-5 md:w-5 text-gray-500" />
+                    </Button>
+                </header>
+    
+                <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4">
+                    <AnimatePresence initial={false}>
+                        {messages.map((message) => (
+                    <motion.div
+                      key={message.id}
+                                initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0 }}
+                                layout
+                                className={`flex items-end gap-2 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                            >
+                                {message.sender === 'ai' && <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gray-300 flex-shrink-0" />}
+                                <div className={`max-w-[85%] sm:max-w-[75%] rounded-2xl px-3 md:px-4 py-2 md:py-3 ${message.sender === 'user' ? 'bg-cyan-600 text-white rounded-br-none' : 'bg-gray-200 text-gray-800 rounded-bl-none'}`}>
+                                    {message.therapistInfo ? (
+                                        <TherapistCard therapist={message.therapistInfo} />
+                                    ) : (
+                                        <div className="relative group">
+                                            <p className="text-sm md:text-base leading-relaxed" style={{
+                                              WebkitUserSelect: "text",
+                                              MozUserSelect: "text",
+                                              msUserSelect: "text",
+                                              userSelect: "text"
+                                            }} dangerouslySetInnerHTML={{ __html: message.content.replace(/\n/g, '<br />').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                                            
+                                            {message.content && (
+                                                <button 
+                                                    onClick={() => {
+                                                        navigator.clipboard.writeText(message.content);
+                                                        
+                                                        // Create tooltip element for feedback
+                                                        const button = document.activeElement as HTMLElement;
+                                                        const rect = button.getBoundingClientRect();
+                                                        
+                                                        const tooltip = document.createElement('div');
+                                                        tooltip.innerText = 'Copied!';
+                                                        tooltip.style.position = 'fixed';
+                                                        tooltip.style.left = `${rect.left}px`;
+                                                        tooltip.style.top = `${rect.top - 30}px`;
+                                                        tooltip.style.backgroundColor = '#10b981';
+                                                        tooltip.style.color = 'white';
+                                                        tooltip.style.padding = '4px 8px';
+                                                        tooltip.style.borderRadius = '4px';
+                                                        tooltip.style.fontSize = '12px';
+                                                        tooltip.style.fontWeight = 'bold';
+                                                        tooltip.style.zIndex = '9999';
                                                         tooltip.style.opacity = '0';
+                                                        tooltip.style.transition = 'opacity 0.2s ease-in-out';
+                                                        
+                                                        document.body.appendChild(tooltip);
+                                                        
+                                                        // Animate tooltip
                                                         setTimeout(() => {
-                                                            document.body.removeChild(tooltip);
-                                                        }, 200);
-                                                    }, 1500);
-                                                }}
-                                                className={`absolute ${message.sender === 'user' ? 'left-1' : 'right-1'} top-1 p-1.5 rounded-full 
-                                                    ${message.sender === 'user' 
-                                                        ? 'bg-cyan-700 hover:bg-cyan-800 text-white' 
-                                                        : 'bg-gray-300 hover:bg-gray-400 text-gray-700'} 
-                                                    opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 transition-opacity`}
-                                                title="Copy message"
-                                                aria-label="Copy message"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                                </svg>
-                                            </button>
-                                        )}
-                                    </div>
-                                )}
+                                                            tooltip.style.opacity = '1';
+                                                        }, 10);
+                                                        
+                                                        setTimeout(() => {
+                                                            tooltip.style.opacity = '0';
+                                                            setTimeout(() => {
+                                                                document.body.removeChild(tooltip);
+                                                            }, 200);
+                                                        }, 1500);
+                                                    }}
+                                                    className={`absolute ${message.sender === 'user' ? 'left-1' : 'right-1'} top-1 p-1.5 rounded-full 
+                                                        ${message.sender === 'user' 
+                                                            ? 'bg-cyan-700 hover:bg-cyan-800 text-white' 
+                                                            : 'bg-gray-300 hover:bg-gray-400 text-gray-700'} 
+                                                        opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 transition-opacity`}
+                                                    title="Copy message"
+                                                    aria-label="Copy message"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                                    </svg>
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </motion.div>
+                      ))}
+                      {isTyping && (
+                                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex items-end gap-2 justify-start">
+                                    <div className="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0" />
+                                    <div className="max-w-[75%] rounded-2xl px-4 py-3 bg-gray-200 text-gray-800 rounded-bl-none">
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="h-1.5 w-1.5 bg-gray-500 rounded-full animate-pulse" />
+                                            <span className="h-1.5 w-1.5 bg-gray-500 rounded-full animate-pulse [animation-delay:0.2s]" />
+                                            <span className="h-1.5 w-1.5 bg-gray-500 rounded-full animate-pulse [animation-delay:0.4s]" />
                             </div>
+                          </div>
                         </motion.div>
-              ))}
-              {isTyping && (
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex items-end gap-2 justify-start">
-                            <div className="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0" />
-                            <div className="max-w-[75%] rounded-2xl px-4 py-3 bg-gray-200 text-gray-800 rounded-bl-none">
-                                <div className="flex items-center gap-1.5">
-                                    <span className="h-1.5 w-1.5 bg-gray-500 rounded-full animate-pulse" />
-                                    <span className="h-1.5 w-1.5 bg-gray-500 rounded-full animate-pulse [animation-delay:0.2s]" />
-                                    <span className="h-1.5 w-1.5 bg-gray-500 rounded-full animate-pulse [animation-delay:0.4s]" />
+                      )}
+                      
+                      {/* Rating component */}
+                      {currentStep === 'q9_rating' && !isTyping && (
+                        <div className="flex flex-col items-center w-full">
+                          <RatingStars onRate={(rating) => {
+                            updateUserPreferences({ experienceRating: rating });
+                            addMessage({ sender: 'user', content: `Rating: ${rating}/10 stars` });
+                            addMessage({ sender: 'ai', content: "Thank you for your feedback! It is safe now to close the conversation." });
+                            
+                            // Save session data with rating immediately
+                            const saveRating = async () => {
+                              try {
+                                console.log("Saving rating:", rating); // Debug log
+                                
+                                if (!userPreferences.sessionId) {
+                                  console.error("No session ID found, cannot save rating");
+                                  return;
+                                }
+                                
+                                // Explicitly convert rating to a number to ensure proper data type
+                                const numericRating = Number(rating);
+                                console.log("Numeric rating:", numericRating); // Debug log
+                                
+                                // Direct upsert approach - this will either insert or update
+                                // Include all available user preferences to avoid null fields
+                                const sessionData = {
+                                  session_id: userPreferences.sessionId,
+                                  experience_rating: numericRating,
+                                  // Include other fields that might already be set
+                                  mood: userPreferences.mood,
+                                  brings_here_today: userPreferences.bringsHereToday,
+                                  treatment_matters: userPreferences.treatmentMatters ? userPreferences.treatmentMatters : null,
+                                  touch_style: userPreferences.touchStyle,
+                                  therapist_preference: userPreferences.therapistPreference,
+                                  session_location: userPreferences.sessionLocation,
+                                  preferred_time: userPreferences.preferredTime,
+                                  conversation_style: userPreferences.conversationStyle,
+                                  additional_notes: userPreferences.additionalNotes,
+                                  scent_preferences: userPreferences.scentPreferences,
+                                  contact_info: userPreferences.contactInfo,
+                                  location_live: userPreferences.locationLive,
+                                  wants_scent_info: userPreferences.wantsScentInfo
+                                };
+                                
+                                console.log("Upserting session with data:", sessionData);
+                                
+                                const { data, error } = await supabase
+                                  .from('sessions')
+                                  .upsert([sessionData], { 
+                                    onConflict: 'session_id',
+                                    ignoreDuplicates: false
+                                  });
+                                
+                                if (error) {
+                                  console.error("Error saving rating:", error);
+                                  
+                                  // Fallback to direct SQL if upsert fails
+                                  const { error: sqlError } = await supabase
+                                    .rpc('update_experience_rating', { 
+                                      p_session_id: userPreferences.sessionId, 
+                                      p_rating: numericRating 
+                                    });
+                                    
+                                  if (sqlError) {
+                                    console.error("SQL update failed:", sqlError);
+                                  } else {
+                                    console.log("Rating saved via SQL function");
+                                  }
+                                } else {
+                                  console.log("Rating saved successfully:", data);
+                                }
+                              } catch (err) {
+                                console.error("Exception when saving rating:", err);
+                              }
+                            };
+                            
+                            saveRating();
+                            setCurrentStep('complete');
+                          }} />
+                        </div>
+                      )}
+                    </AnimatePresence>
+                    <div ref={messagesEndRef} />
+                  </div>
+    
+                    <div className="p-3 md:p-4 border-t border-gray-200/80 bg-white/80 shrink-0">
+                        {lastMessage?.multiChoiceOptions && !isTyping && (
+                            <div className="mb-2 flex flex-col items-start gap-2">
+                                <div className="flex flex-wrap gap-2">
+                                    {lastMessage.multiChoiceOptions.map((option: string) => (
+                                        <button key={option} onClick={() => handleMultiChoice(option)} className={`flex items-center gap-2 text-sm md:text-base px-3 md:px-4 py-2 rounded-full border-2 transition-all shadow-md ${selectedMultiChoice.includes(option) ? 'bg-cyan-600 text-white border-cyan-700' : 'bg-white text-cyan-700 border-cyan-600 hover:bg-gray-50'}`}>
+                                            {selectedMultiChoice.includes(option) && <Check className="h-3 w-3 md:h-4 md:w-4" />}
+                                            {option}
+                                        </button>
+                                    ))}
+                                </div>
+                                <Button onClick={submitMultiChoice} disabled={selectedMultiChoice.length === 0} size="sm" className="mt-2 bg-cyan-600 hover:bg-cyan-700 text-white font-medium text-sm md:text-base">Continue</Button>
+                            </div>
+                        )}
+                        
+                        {lastMessage?.options && !isTyping && (
+                            <div className="mb-2 flex flex-wrap gap-2">
+                                {lastMessage.options.map((option: string) => (
+                                    <button key={option} onClick={() => handleOptionClick(option)} className="bg-cyan-600 text-white text-sm md:text-base px-3 md:px-4 py-2 rounded-full border border-cyan-700 hover:bg-cyan-700 transition-all font-medium shadow-md">
+                                        {option}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+    
+                    <div className="relative">
+                      <Textarea
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                                onKeyPress={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleTextInputSend(); } }}
+                        placeholder="Type your message..."
+                                className="w-full bg-gray-100 border-gray-300 rounded-2xl p-3 pr-12 resize-none text-sm md:text-base focus:ring-cyan-500 focus:border-cyan-500"
+                        rows={1}
+                            />
+                            <Button onClick={handleTextInputSend} disabled={!inputValue.trim() || isTyping} size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 md:h-8 md:w-8 bg-cyan-600 hover:bg-cyan-700 rounded-full">
+                                <ArrowUp className="h-3 w-3 md:h-4 md:w-4" />
+                      </Button>
                     </div>
                   </div>
-                </motion.div>
-              )}
-              
-              {/* Rating component */}
-              {currentStep === 'q9_rating' && !isTyping && (
-                <div className="flex flex-col items-center w-full">
-                  <RatingStars onRate={(rating) => {
-                    updateUserPreferences({ experienceRating: rating });
-                    addMessage({ sender: 'user', content: `Rating: ${rating}/10 stars` });
-                    addMessage({ sender: 'ai', content: "Thank you for your feedback! It is safe now to close the conversation." });
-                    
-                    // Save session data with rating immediately
-                    const saveRating = async () => {
-                      try {
-                        console.log("Saving rating:", rating); // Debug log
-                        
-                        if (!userPreferences.sessionId) {
-                          console.error("No session ID found, cannot save rating");
-                          return;
-                        }
-                        
-                        // Explicitly convert rating to a number to ensure proper data type
-                        const numericRating = Number(rating);
-                        console.log("Numeric rating:", numericRating); // Debug log
-                        
-                        // Direct upsert approach - this will either insert or update
-                        // Include all available user preferences to avoid null fields
-                        const sessionData = {
-                          session_id: userPreferences.sessionId,
-                          experience_rating: numericRating,
-                          // Include other fields that might already be set
-                          mood: userPreferences.mood,
-                          brings_here_today: userPreferences.bringsHereToday,
-                          treatment_matters: userPreferences.treatmentMatters ? userPreferences.treatmentMatters : null,
-                          touch_style: userPreferences.touchStyle,
-                          therapist_preference: userPreferences.therapistPreference,
-                          session_location: userPreferences.sessionLocation,
-                          preferred_time: userPreferences.preferredTime,
-                          conversation_style: userPreferences.conversationStyle,
-                          additional_notes: userPreferences.additionalNotes,
-                          scent_preferences: userPreferences.scentPreferences,
-                          contact_info: userPreferences.contactInfo,
-                          location_live: userPreferences.locationLive,
-                          wants_scent_info: userPreferences.wantsScentInfo
-                        };
-                        
-                        console.log("Upserting session with data:", sessionData);
-                        
-                        const { data, error } = await supabase
-                          .from('sessions')
-                          .upsert([sessionData], { 
-                            onConflict: 'session_id',
-                            ignoreDuplicates: false
-                          });
-                        
-                        if (error) {
-                          console.error("Error saving rating:", error);
-                          
-                          // Fallback to direct SQL if upsert fails
-                          const { error: sqlError } = await supabase
-                            .rpc('update_experience_rating', { 
-                              p_session_id: userPreferences.sessionId, 
-                              p_rating: numericRating 
-                            });
-                            
-                          if (sqlError) {
-                            console.error("SQL update failed:", sqlError);
-                          } else {
-                            console.log("Rating saved via SQL function");
-                          }
-                        } else {
-                          console.log("Rating saved successfully:", data);
-                        }
-                      } catch (err) {
-                        console.error("Exception when saving rating:", err);
-                      }
-                    };
-                    
-                    saveRating();
-                    setCurrentStep('complete');
-                  }} />
+                    <ResearchModal />
                 </div>
-              )}
-            </AnimatePresence>
-            <div ref={messagesEndRef} />
-          </div>
-
-            <div className="p-3 md:p-4 border-t border-gray-200">
-                {lastMessage?.multiChoiceOptions && !isTyping && (
-                    <div className="mb-2 flex flex-col items-start gap-2">
-                        <div className="flex flex-wrap gap-2">
-                            {lastMessage.multiChoiceOptions.map((option: string) => (
-                                <button key={option} onClick={() => handleMultiChoice(option)} className={`flex items-center gap-2 text-sm md:text-base px-3 md:px-4 py-2 rounded-full border-2 transition-all shadow-md ${selectedMultiChoice.includes(option) ? 'bg-cyan-600 text-white border-cyan-700' : 'bg-white text-cyan-700 border-cyan-600 hover:bg-gray-50'}`}>
-                                    {selectedMultiChoice.includes(option) && <Check className="h-3 w-3 md:h-4 md:w-4" />}
-                                    {option}
-                                </button>
-                            ))}
-                        </div>
-                        <Button onClick={submitMultiChoice} disabled={selectedMultiChoice.length === 0} size="sm" className="mt-2 bg-cyan-600 hover:bg-cyan-700 text-white font-medium text-sm md:text-base">Continue</Button>
-                    </div>
-                )}
-                
-                {lastMessage?.options && !isTyping && (
-                    <div className="mb-2 flex flex-wrap gap-2">
-                        {lastMessage.options.map((option: string) => (
-                            <button key={option} onClick={() => handleOptionClick(option)} className="bg-cyan-600 text-white text-sm md:text-base px-3 md:px-4 py-2 rounded-full border border-cyan-700 hover:bg-cyan-700 transition-all font-medium shadow-md">
-                                {option}
-                            </button>
-                        ))}
-                    </div>
-                )}
-
-            <div className="relative">
-              <Textarea
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                        onKeyPress={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleTextInputSend(); } }}
-                placeholder="Type your message..."
-                        className="w-full bg-gray-100 border-gray-300 rounded-2xl p-3 pr-12 resize-none text-sm md:text-base focus:ring-cyan-500 focus:border-cyan-500"
-                rows={1}
-                    />
-                    <Button onClick={handleTextInputSend} disabled={!inputValue.trim() || isTyping} size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 md:h-8 md:w-8 bg-cyan-600 hover:bg-cyan-700 rounded-full">
-                        <ArrowUp className="h-3 w-3 md:h-4 md:w-4" />
-              </Button>
             </div>
-          </div>
-            <ResearchModal />
-    </div>
-  )
+        )
 }
