@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     "Book personalized massage therapy with AI-driven aromatherapy recommendations. Reduce stress and improve sleep quality with therapeutic scents inspired by science.",
   keywords: "massage therapy, aromatherapy, AI-powered, therapeutic scents, wellness, stress relief, sleep quality",
   authors: [{ name: "Therapeutic Scents" }],
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
   openGraph: {
     title: "Therapeutic Scents - AI-Powered Massage Therapy",
     description: "Book personalized massage therapy with AI-driven aromatherapy recommendations.",
