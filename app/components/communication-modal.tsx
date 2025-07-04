@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { X, Send } from "lucide-react"
 import { supabase } from "@/lib/supabaseClient"
+import { useLanguage } from "@/hooks/use-language"
 
 export default function CommunicationModal({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: (open: boolean) => void }) {
   const [name, setName] = useState("")
@@ -16,6 +17,7 @@ export default function CommunicationModal({ isOpen, setIsOpen }: { isOpen: bool
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState("")
+  const { t, isRTL } = useLanguage()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -64,9 +66,9 @@ export default function CommunicationModal({ isOpen, setIsOpen }: { isOpen: bool
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className={`sm:max-w-md ${isRTL ? 'rtl' : 'ltr'}`}>
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Contact Us</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">{t.contactModal.title}</DialogTitle>
         </DialogHeader>
         
         {submitted ? (
@@ -78,9 +80,9 @@ export default function CommunicationModal({ isOpen, setIsOpen }: { isOpen: bool
                 </svg>
               </div>
             </div>
-            <h3 className="text-xl font-medium text-green-600 mb-2">Message Sent!</h3>
-            <p className="text-base text-gray-600">We'll get back to you shortly.</p>
-            <p className="text-sm text-gray-500 mt-4">This window will close automatically...</p>
+            <h3 className="text-xl font-medium text-green-600 mb-2">{t.contactModal.messageSent}</h3>
+            <p className="text-base text-gray-600">{t.contactModal.getBackSoon}</p>
+            <p className="text-sm text-gray-500 mt-4">{t.contactModal.autoClose}</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 py-4">
@@ -91,48 +93,48 @@ export default function CommunicationModal({ isOpen, setIsOpen }: { isOpen: bool
             )}
             
             <div>
-              <label htmlFor="name" className="block text-base font-medium mb-1">Name</label>
+              <label htmlFor="name" className="block text-base font-medium mb-1">{t.contactModal.name}</label>
               <Input 
                 id="name" 
                 value={name} 
                 onChange={(e) => setName(e.target.value)} 
-                placeholder="Your name" 
+                placeholder={t.contactModal.namePlaceholder} 
                 required 
                 className="text-base"
               />
             </div>
             
             <div>
-              <label htmlFor="email" className="block text-base font-medium mb-1">Email</label>
+              <label htmlFor="email" className="block text-base font-medium mb-1">{t.contactModal.email}</label>
               <Input 
                 id="email" 
                 type="email" 
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)} 
-                placeholder="your@email.com" 
+                placeholder={t.contactModal.emailPlaceholder} 
                 required 
                 className="text-base"
               />
             </div>
             
             <div>
-              <label htmlFor="phone" className="block text-base font-medium mb-1">Phone (optional)</label>
+              <label htmlFor="phone" className="block text-base font-medium mb-1">{t.contactModal.phone}</label>
               <Input 
                 id="phone" 
                 value={phone} 
                 onChange={(e) => setPhone(e.target.value)} 
-                placeholder="Your phone number" 
+                placeholder={t.contactModal.phonePlaceholder} 
                 className="text-base"
               />
             </div>
             
             <div>
-              <label htmlFor="message" className="block text-base font-medium mb-1">Message</label>
+              <label htmlFor="message" className="block text-base font-medium mb-1">{t.contactModal.message}</label>
               <Textarea 
                 id="message" 
                 value={message} 
                 onChange={(e) => setMessage(e.target.value)} 
-                placeholder="How can we help you?" 
+                placeholder={t.contactModal.messagePlaceholder} 
                 rows={4} 
                 required 
                 className="text-base"
@@ -148,12 +150,12 @@ export default function CommunicationModal({ isOpen, setIsOpen }: { isOpen: bool
                 {isSubmitting ? (
                   <span className="flex items-center gap-2">
                     <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Sending...
+                    {t.contactModal.sending}
                   </span>
                 ) : (
                   <span className="flex items-center gap-2">
                     <Send className="h-4 w-4" />
-                    Send Message
+                    {t.contactModal.sendMessage}
                   </span>
                 )}
               </Button>

@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
+import { LanguageProvider } from "@/hooks/use-language"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
     "Book personalized massage therapy with AI-driven aromatherapy recommendations. Reduce stress and improve sleep quality with therapeutic scents inspired by science.",
   keywords: "massage therapy, aromatherapy, AI-powered, therapeutic scents, wellness, stress relief, sleep quality",
   authors: [{ name: "Therapeutic Scents" }],
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
   openGraph: {
     title: "Therapeutic Scents - AI-Powered Massage Therapy",
     description: "Book personalized massage therapy with AI-driven aromatherapy recommendations.",
@@ -26,7 +28,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
+      </body>
     </html>
   )
 }

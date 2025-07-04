@@ -74,7 +74,7 @@ interface AppState {
   showResearchModal: boolean
   messageIdCounter: number
   // Actions
-  startChat: () => void
+  startChat: (translations?: any) => void
   closeChat: () => void
   addMessage: (message: Omit<Message, "id" | "timestamp">) => void
   updateUserPreferences: (preferences: Partial<UserPreferences>) => void
@@ -98,7 +98,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   messageIdCounter: 0,
 
   // Actions
-  startChat: () => {
+  startChat: (translations) => {
     // Generate a text-based session ID with timestamp
     const sessionId = `session_${Date.now()}`
     set({
@@ -112,13 +112,13 @@ export const useAppStore = create<AppState>((set, get) => ({
 
     get().addMessage({
       sender: "ai",
-      content: "Let's find the therapist and therapy that's just right for you…",
+      content: translations?.chat?.welcome || "Let's find the therapist and therapy that's just right for you…",
     })
     
     setTimeout(() => {
         get().addMessage({
             sender: "ai",
-            content: "Nice to meet you! I'm Tomer – a professional massage therapist and coordinator between skilled therapists and clients seeking unique experiences across the country. If you're a therapist looking to grow your business, feel free to reach out at 09-7961414 or answer below, \"I am a therapist.\""
+            content: translations?.chat?.introduction || "Nice to meet you! I'm Tomer – a professional massage therapist and coordinator between skilled therapists and clients seeking unique experiences across the country. If you're a therapist looking to grow your business, feel free to reach out at 09-7961414 or answer below, \"I am a therapist.\""
         });
         get().setCurrentStep("introduction");
     }, 1500)
@@ -126,7 +126,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     setTimeout(() => {
         get().addMessage({
             sender: "ai",
-            content: "How are you today?"
+            content: translations?.chat?.moodQuestion || "How are you today?"
         });
         get().setCurrentStep("q1_mood");
     }, 3000)

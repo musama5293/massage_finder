@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button"
 import { X, ExternalLink } from "lucide-react"
 import { motion } from "framer-motion"
 import { useAppStore } from "../store/use-app-store"
+import { useLanguage } from "@/hooks/use-language"
 
 export default function ResearchModal() {
   const { showResearchModal, toggleResearchModal, addMessage, setCurrentStep } = useAppStore()
+  const { t, isRTL } = useLanguage()
 
   const handleContinueAfterResearch = (interested: boolean) => {
     toggleResearchModal()
@@ -15,16 +17,16 @@ export default function ResearchModal() {
     if (interested) {
       addMessage({
         sender: "ai",
-        content: "נהדר! זה נשמע כמו משהו שתרצה לחוות? אם כן, אשמח לחבר אותך למטפל המתאים. אם לא, בואו נמצא לך את סוג העיסוי שמתאים לך בדיוק."
+        content: t.researchModal.interestedResponse
       })
       
       setTimeout(() => {
         addMessage({
           sender: "ai", 
-          content: "כדי ליצור עבורך פגישה שבאמת מתאימה לך, ספר לנו מה הביא אותך לכאן היום.",
+          content: t.chat.bringsHereQuestion,
           options: [
-            "כן, זה נשמע מעולה - בואו נמשיך",
-            "לא, אני מעוניין בסוג אחר של עיסוי"
+            t.chat.experienceOptions.yes,
+            t.chat.experienceOptions.no
           ]
         })
         setCurrentStep("bringsHereToday")
@@ -32,19 +34,19 @@ export default function ResearchModal() {
     } else {
       addMessage({
         sender: "ai",
-        content: "אין בעיה! בואו נמצא לך את סוג העיסוי שמתאים לך בדיוק."
+        content: t.researchModal.notInterestedResponse
       })
       
       setTimeout(() => {
         addMessage({
           sender: "ai",
-          content: "כדי ליצור עבורך פגישה שבאמת מתאימה לך, ספר לנו מה הביא אותך לכאן היום.",
+          content: t.chat.bringsHereQuestion,
           options: [
-            "אני מטפל מוסמך",
-            "אני מתלמד המחפש להתרגל ולבנות קליינטלה", 
-            "אני רק צריך להתייעץ ולדבר",
-            "אני רוצה לקבל עיסוי מקצועי",
-            "אחר"
+            t.chat.bringsHereOptions.therapist,
+            t.chat.bringsHereOptions.trainee,
+            t.chat.bringsHereOptions.consult,
+            t.chat.bringsHereOptions.massage,
+            t.chat.bringsHereOptions.more
           ]
         })
         setCurrentStep("bringsHereToday")
@@ -54,10 +56,10 @@ export default function ResearchModal() {
 
   return (
     <Dialog open={showResearchModal} onOpenChange={toggleResearchModal}>
-      <DialogContent className="max-w-2xl bg-gray-900 border-gray-700 text-white">
+      <DialogContent className={`max-w-2xl bg-gray-900 border-gray-700 text-white ${isRTL ? 'rtl' : 'ltr'}`}>
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-[#00D97E] mb-4">
-            מחקר מדעי על עיסוי טיפולי עם ריחות טיפוליים
+            {t.researchModal.title}
           </DialogTitle>
         </DialogHeader>
         
@@ -67,41 +69,38 @@ export default function ResearchModal() {
           className="space-y-6"
         >
           <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-3 text-[#00D97E]">תוצאות המחקר:</h3>
+            <h3 className="text-lg font-semibold mb-3 text-[#00D97E]">{t.researchModal.results.title}</h3>
             <ul className="space-y-3 text-gray-300">
               <li className="flex items-start">
-                <span className="text-[#00D97E] mr-2">•</span>
-                <span><strong>הפחתת רמות הקורטיזול</strong> (הורמון הלחץ) ב-23% בממוצע</span>
+                <span className={`text-[#00D97E] ${isRTL ? 'ml-2' : 'mr-2'}`}>•</span>
+                <span><strong>{isRTL ? 'הפחתת רמות הקורטיזול' : 'Reduced Cortisol Levels'}</strong> {t.researchModal.results.items.cortisol}</span>
               </li>
               <li className="flex items-start">
-                <span className="text-[#00D97E] mr-2">•</span>
-                <span><strong>שיפור איכות השינה</strong> ב-31% מהמשתתפים דיווחו על שינה טובה יותר</span>
+                <span className={`text-[#00D97E] ${isRTL ? 'ml-2' : 'mr-2'}`}>•</span>
+                <span><strong>{isRTL ? 'שיפור איכות השינה' : 'Improved Sleep Quality'}</strong> {t.researchModal.results.items.sleep}</span>
               </li>
               <li className="flex items-start">
-                <span className="text-[#00D97E] mr-2">•</span>
-                <span><strong>הפחתת חרדה ומתח</strong> ב-45% מהמשתתפים הרגישו רגועים יותר</span>
+                <span className={`text-[#00D97E] ${isRTL ? 'ml-2' : 'mr-2'}`}>•</span>
+                <span><strong>{isRTL ? 'הפחתת חרדה ומתח' : 'Reduced Anxiety and Stress'}</strong> {t.researchModal.results.items.anxiety}</span>
               </li>
               <li className="flex items-start">
-                <span className="text-[#00D97E] mr-2">•</span>
-                <span><strong>שחרור מתח שרירי</strong> השילוב של עיסוי וריחות הוכח כיעיל פי 2</span>
+                <span className={`text-[#00D97E] ${isRTL ? 'ml-2' : 'mr-2'}`}>•</span>
+                <span><strong>{isRTL ? 'שחרור מתח שרירי' : 'Muscle Tension Relief'}</strong> {t.researchModal.results.items.muscle}</span>
               </li>
             </ul>
           </div>
 
           <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-3 text-[#00D97E]">איך זה עובד?</h3>
+            <h3 className="text-lg font-semibold mb-3 text-[#00D97E]">{t.researchModal.howItWorks.title}</h3>
             <p className="text-gray-300 leading-relaxed">
-              המחקר הראה שמולקולות ריח ספציפיות מעוררות את המערכת הלימבית במוח, 
-              האחראית על רגולציה של לחץ ורגשות. כשמשלבים זאת עם עיסוי טיפולי, 
-              נוצרת סינרגיה שמגבירה את היתרונות הטיפוליים של שני הטיפולים.
+              {t.researchModal.howItWorks.description}
             </p>
           </div>
 
           <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-3 text-[#00D97E]">הפרוטוקול שלנו:</h3>
+            <h3 className="text-lg font-semibold mb-3 text-[#00D97E]">{t.researchModal.protocol.title}</h3>
             <p className="text-gray-300 leading-relaxed">
-              אנחנו משתמשים בפרוטוקול מותאם אישית שמבוסס על העדפות הריח האישיות שלך, 
-              בשילוב עם טכניקות עיסוי מתקדמות. כל פגישה מותאמת לצרכים הספציפיים שלך.
+              {t.researchModal.protocol.description}
             </p>
           </div>
 
@@ -110,14 +109,14 @@ export default function ResearchModal() {
               onClick={() => handleContinueAfterResearch(true)}
               className="bg-[#00D97E] hover:bg-[#00C470] text-black px-8 py-3 rounded-full font-medium"
             >
-              כן, זה נשמע מעניין! בואו נמשיך
+              {t.researchModal.buttons.interested}
             </Button>
             <Button
               onClick={() => handleContinueAfterResearch(false)}
               variant="outline"
               className="border-gray-600 text-gray-300 hover:bg-gray-800 px-8 py-3 rounded-full"
             >
-              לא, אני מעוניין בעיסוי רגיל
+              {t.researchModal.buttons.notInterested}
             </Button>
           </div>
 
@@ -126,7 +125,7 @@ export default function ResearchModal() {
               href="#" 
               className="text-[#00D97E] hover:text-[#00C470] text-sm inline-flex items-center gap-1"
             >
-              קרא את המחקר המלא <ExternalLink className="h-4 w-4" />
+              {t.researchModal.readMore} <ExternalLink className="h-4 w-4" />
             </a>
           </div>
         </motion.div>
