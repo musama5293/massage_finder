@@ -42,13 +42,13 @@ export default function TherapeuticScentsApp() {
         <div className="text-xl md:text-2xl font-bold text-stone-900">{t.header.title}</div>
         <div className="flex items-center gap-3">
           {!isRTL && <LanguageSwitcher />}
-          <Button 
-            variant="outline" 
-            className="border-teal-600 text-teal-700 hover:bg-teal-600 hover:text-white"
-            onClick={() => setContactModalOpen(true)}
-          >
+        <Button 
+          variant="outline" 
+          className="border-teal-600 text-teal-700 hover:bg-teal-600 hover:text-white"
+          onClick={() => setContactModalOpen(true)}
+        >
             {t.header.contact}
-          </Button>
+        </Button>
           {isRTL && <LanguageSwitcher />}
         </div>
       </header>
