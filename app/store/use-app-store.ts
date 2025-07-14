@@ -90,7 +90,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   messages: [],
   currentStep: "welcome",
   isTyping: false,
-  showChat: false,
+  showChat: true,
   userPreferences: {},
   sessionId: '',
   recommendedTherapist: null,

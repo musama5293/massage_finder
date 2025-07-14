@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useAppStore } from "../store/use-app-store"
 import { supabase } from "@/lib/supabaseClient"
 import { useLanguage } from "@/hooks/use-language"
+import LanguageSwitcher from "@/components/language-switcher"
 
 // Helper function to validate phone numbers
 const isValidPhoneNumber = (input: string): boolean => {
@@ -742,15 +743,18 @@ export default function ChatInterface() {
             <div className="relative flex flex-col h-full">
                 <header className="p-3 md:p-4 border-b border-gray-200/80 flex justify-between items-center bg-white/80 shrink-0">
                     <h1 className="text-lg md:text-xl font-semibold text-gray-800">Your AI Assistant</h1>
-                    <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        onClick={closeChat} 
-                        className="rounded-full hover:bg-gray-100"
-                        aria-label="Close chat"
-                    >
-                        <X className="h-4 w-4 md:h-5 md:w-5 text-gray-500" />
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <LanguageSwitcher />
+                        <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            onClick={closeChat} 
+                            className="rounded-full hover:bg-gray-100"
+                            aria-label="Close chat"
+                        >
+                            <X className="h-4 w-4 md:h-5 md:w-5 text-gray-500" />
+                        </Button>
+                    </div>
                 </header>
     
                 <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4">
