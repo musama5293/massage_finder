@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { Language, translations, Translations } from '@/lib/translations'
+import { useAppStore } from '@/app/store/use-app-store'
 
 interface LanguageContextType {
   language: Language
@@ -14,6 +15,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>('en')
+  const retranslateMessages = useAppStore(state => state.retranslateMessages)
 
   // Load language from localStorage on mount
   useEffect(() => {
@@ -23,7 +25,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [])
 
-  // Save language to localStorage when it changes
+  // Save language to localStorage when it changes and retranslate messages
   useEffect(() => {
     localStorage.setItem('language', language)
     
@@ -35,7 +37,10 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       document.documentElement.dir = 'ltr'
       document.documentElement.lang = 'en'
     }
-  }, [language])
+
+    // Retranslate all existing chat messages
+    retranslateMessages(translations[language])
+  }, [language, retranslateMessages])
 
   const value = {
     language,

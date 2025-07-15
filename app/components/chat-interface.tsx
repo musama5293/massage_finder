@@ -145,7 +145,28 @@ export default function ChatInterface() {
     toggleResearchModal,
     resetChat,
     closeChat,
+    retranslateMessages,
   } = useAppStore()
+
+  // Helper function to add messages with translation keys
+  const addTranslatedMessage = (content: string, translationKey: string, options?: { 
+    options?: string[], 
+    optionKeys?: string[],
+    multiChoiceOptions?: string[],
+    multiChoiceOptionKeys?: string[],
+    therapistInfo?: any 
+  }) => {
+    addMessage({
+      sender: 'ai',
+      content,
+      translationKey,
+      options: options?.options,
+      optionKeys: options?.optionKeys,
+      multiChoiceOptions: options?.multiChoiceOptions,
+      multiChoiceOptionKeys: options?.multiChoiceOptionKeys,
+      therapistInfo: options?.therapistInfo
+    });
+  }
 
   // Create preference labels using translations
   const preferenceLabels: { [key: string]: string } = {
@@ -173,7 +194,8 @@ export default function ChatInterface() {
   const askForRating = () => {
     addMessage({ 
         sender: 'ai', 
-        content: t.chat.ratingQuestion
+        content: t.chat.ratingQuestion,
+        translationKey: 'chat.ratingQuestion'
     });
     setCurrentStep('q9_rating');
   };
@@ -188,7 +210,7 @@ export default function ChatInterface() {
 
             // Make sure we have contact info before proceeding
             if (!userPreferences.contactInfo) {
-                addMessage({ sender: 'ai', content: t.chat.contactQuestion });
+                addMessage({ sender: 'ai', content: t.chat.contactQuestion, translationKey: 'chat.contactQuestion' });
                 setCurrentStep('q8_contact_info');
                 return;
             }
@@ -220,11 +242,12 @@ export default function ChatInterface() {
 
             const therapistData = filteredTherapists[Math.floor(Math.random() * filteredTherapists.length)];
 
-            addMessage({ sender: 'ai', content: t.chat.recommendationIntro });
+            addMessage({ sender: 'ai', content: t.chat.recommendationIntro, translationKey: 'chat.recommendationIntro' });
             addMessage({ sender: 'ai', content: '', therapistInfo: therapistData });
             addMessage({ 
                 sender: 'ai', 
-                content: `${t.chat.representativeContact} ${userPreferences.contactInfo} ${isRTL ? 'לתת לך מידע נוסף ולתאמן.' : 'to give you more information and coordinate.'}\n${t.chat.ratingQuestion}` 
+                content: `${t.chat.representativeContact} ${userPreferences.contactInfo} ${isRTL ? 'לתת לך מידע נוסף ולתאמן.' : 'to give you more information and coordinate.'}\n${t.chat.ratingQuestion}`,
+                translationKey: 'chat.representativeContact'
             });
             setCurrentStep('q9_rating');
         };
@@ -411,15 +434,15 @@ export default function ChatInterface() {
                 .filter(Boolean);
 
             if (summaryLines.length > 0) {
-                addMessage({ sender: 'ai', content: `${t.chat.summaryIntro}\n\n${summaryLines.join('\n')}` });
+                addMessage({ sender: 'ai', content: `${t.chat.summaryIntro}\n\n${summaryLines.join('\n')}`, translationKey: 'chat.summaryIntro' });
             } else {
-                addMessage({ sender: 'ai', content: t.chat.summaryEmpty });
+                addMessage({ sender: 'ai', content: t.chat.summaryEmpty, translationKey: 'chat.summaryEmpty' });
             }
             return;
         }
 
         if (lowerCaseInput.includes("talk to a human")) {
-            addMessage({ sender: 'ai', content: t.chat.humanSupport });
+            addMessage({ sender: 'ai', content: t.chat.humanSupport, translationKey: 'chat.humanSupport' });
             setCurrentStep('complete');
             return;
         }
@@ -427,7 +450,7 @@ export default function ChatInterface() {
         // Special keyword check
         if (lowerCaseInput.includes("i am a therapist")) {
             updateUserPreferences({ bringsHereToday: 'therapist' });
-            addMessage({ sender: 'ai', content: t.chat.therapistContactQuestion });
+            addMessage({ sender: 'ai', content: t.chat.therapistContactQuestion, translationKey: 'chat.therapistContactQuestion' });
             setCurrentStep('q3_therapist_contact');
             return;
         }
@@ -438,9 +461,14 @@ export default function ChatInterface() {
                 addMessage({ 
                     sender: 'ai', 
                     content: t.chat.assistantIntroduction,
+                    translationKey: 'chat.assistantIntroduction',
                     options: [
                         t.chat.researchQuestion,
                         t.chat.researchYes
+                    ],
+                    optionKeys: [
+                        'chat.researchQuestion',
+                        'chat.researchYes'
                     ]
                 });
                 setCurrentStep('q2_research_interest');
@@ -449,13 +477,25 @@ export default function ChatInterface() {
             case 'q2_research_interest':
                 if (lowerCaseInput.includes('interested') || lowerCaseInput.includes('learn') || lowerCaseInput.includes('מעוניין') || lowerCaseInput.includes('ללמוד')) {
                     updateUserPreferences({ wantsResearchInfo: true });
-                    addMessage({ sender: 'ai', content: t.chat.researchNo });
+                    addMessage({ sender: 'ai', content: t.chat.researchNo, translationKey: 'chat.researchNo' });
                     toggleResearchModal();
-                    addMessage({ sender: 'ai', content: t.chat.experienceInterest, options: [t.chat.experienceOptions.yes, t.chat.experienceOptions.no] });
+                    addMessage({ 
+                        sender: 'ai', 
+                        content: t.chat.experienceInterest, 
+                        translationKey: 'chat.experienceInterest',
+                        options: [t.chat.experienceOptions.yes, t.chat.experienceOptions.no],
+                        optionKeys: ['chat.experienceOptions.yes', 'chat.experienceOptions.no']
+                    });
                     setCurrentStep('q2_experience_interest');
                 } else {
                     updateUserPreferences({ wantsResearchInfo: false });
-                    addMessage({ sender: 'ai', content: t.chat.experienceNo, options: [t.chat.bringsHereOptions.therapist, t.chat.bringsHereOptions.trainee, t.chat.bringsHereOptions.consult, t.chat.bringsHereOptions.massage, t.chat.bringsHereOptions.more] });
+                    addMessage({ 
+                        sender: 'ai', 
+                        content: t.chat.experienceNo, 
+                        translationKey: 'chat.experienceNo',
+                        options: [t.chat.bringsHereOptions.therapist, t.chat.bringsHereOptions.trainee, t.chat.bringsHereOptions.consult, t.chat.bringsHereOptions.massage, t.chat.bringsHereOptions.more],
+                        optionKeys: ['chat.bringsHereOptions.therapist', 'chat.bringsHereOptions.trainee', 'chat.bringsHereOptions.consult', 'chat.bringsHereOptions.massage', 'chat.bringsHereOptions.more']
+                    });
                     setCurrentStep('q3_brings_here');
                 }
                 break;
@@ -466,11 +506,17 @@ export default function ChatInterface() {
                         wantsToExperience: true,
                         bringsHereToday: 'research_protocol'  // Add a specific reason for this path
                     });
-                    addMessage({ sender: 'ai', content: t.chat.experienceYes });
+                    addMessage({ sender: 'ai', content: t.chat.experienceYes, translationKey: 'chat.experienceYes' });
                     setCurrentStep('q2_contact');
                 } else {
                     updateUserPreferences({ wantsToExperience: false });
-                    addMessage({ sender: 'ai', content: t.chat.experienceNo, options: [t.chat.bringsHereOptions.therapist, t.chat.bringsHereOptions.trainee, t.chat.bringsHereOptions.consult, t.chat.bringsHereOptions.massage, t.chat.bringsHereOptions.more] });
+                    addMessage({ 
+                        sender: 'ai', 
+                        content: t.chat.experienceNo, 
+                        translationKey: 'chat.experienceNo',
+                        options: [t.chat.bringsHereOptions.therapist, t.chat.bringsHereOptions.trainee, t.chat.bringsHereOptions.consult, t.chat.bringsHereOptions.massage, t.chat.bringsHereOptions.more],
+                        optionKeys: ['chat.bringsHereOptions.therapist', 'chat.bringsHereOptions.trainee', 'chat.bringsHereOptions.consult', 'chat.bringsHereOptions.massage', 'chat.bringsHereOptions.more']
+                    });
                     setCurrentStep('q3_brings_here');
                 }
                 break;
@@ -481,12 +527,13 @@ export default function ChatInterface() {
                 if (!contactInfo || !isValidContactInfo(contactInfo)) {
                     addMessage({ 
                         sender: 'ai', 
-                        content: t.chat.contactInvalid
+                        content: t.chat.contactInvalid,
+                        translationKey: 'chat.contactInvalid'
                     });
                     return;
                 }
                 updateUserPreferences({ contactInfo });
-                addMessage({ sender: 'ai', content: `${t.chat.contactThankYou} ${contactInfo}.` });
+                addMessage({ sender: 'ai', content: `${t.chat.contactThankYou} ${contactInfo}.`, translationKey: 'chat.contactThankYou' });
                 askForRating();
                 break;
 
@@ -496,12 +543,13 @@ export default function ChatInterface() {
                 if (!therapistContactInfo || !isValidContactInfo(therapistContactInfo)) {
                     addMessage({ 
                         sender: 'ai', 
-                        content: t.chat.contactInvalid
+                        content: t.chat.contactInvalid,
+                        translationKey: 'chat.contactInvalid'
                     });
                     return;
                 }
                 updateUserPreferences({ contactInfo: therapistContactInfo });
-                addMessage({ sender: 'ai', content: t.chat.contactRepresentative });
+                addMessage({ sender: 'ai', content: t.chat.contactRepresentative, translationKey: 'chat.contactRepresentative' });
                 askForRating();
                 break;
 
@@ -511,46 +559,59 @@ export default function ChatInterface() {
                 if (!consultContactInfo || !isValidContactInfo(consultContactInfo)) {
                     addMessage({ 
                         sender: 'ai', 
-                        content: t.chat.contactInvalid
+                        content: t.chat.contactInvalid,
+                        translationKey: 'chat.contactInvalid'
                     });
                     return;
                 }
                 updateUserPreferences({ contactInfo: consultContactInfo });
-                addMessage({ sender: 'ai', content: t.chat.contactRepresentative });
+                addMessage({ sender: 'ai', content: t.chat.contactRepresentative, translationKey: 'chat.contactRepresentative' });
                 askForRating();
                 break;
 
             case 'q3_brings_here':
                 if (lowerCaseInput.includes('more') || lowerCaseInput.includes('עוד')) {
-                    addMessage({ sender: 'ai', content: t.chat.bringsHereMore });
+                    addMessage({ sender: 'ai', content: t.chat.bringsHereMore, translationKey: 'chat.bringsHereMore' });
                     setCurrentStep('q3_brings_here_other');
                 } else if (lowerCaseInput.includes('therapist') || lowerCaseInput.includes('trainee') || lowerCaseInput.includes('מטפל') || lowerCaseInput.includes('מתמחה')) {
                     const userType = (lowerCaseInput.includes('therapist') || lowerCaseInput.includes('מטפל')) ? 'therapist' : 'trainee';
                     updateUserPreferences({ bringsHereToday: userType });
-                    addMessage({ sender: 'ai', content: t.chat.therapistContactQuestion });
+                    addMessage({ sender: 'ai', content: t.chat.therapistContactQuestion, translationKey: 'chat.therapistContactQuestion' });
                     setCurrentStep('q3_therapist_contact');
                 } else if (lowerCaseInput.includes('consult') || lowerCaseInput.includes('התייעץ')) {
                     updateUserPreferences({ bringsHereToday: 'consult' });
-                    addMessage({ sender: 'ai', content: t.chat.consultContact });
+                    addMessage({ sender: 'ai', content: t.chat.consultContact, translationKey: 'chat.consultContact' });
                     setCurrentStep('q3_consult_contact');
                 } else {
                     updateUserPreferences({ bringsHereToday: 'massage' });
-                    addMessage({ sender: 'ai', content: t.chat.uniqueExperience });
-                    addMessage({ sender: 'ai', content: t.chat.treatmentMattersQuestion, multiChoiceOptions: t.chat.treatmentMattersOptions });
+                    addMessage({ sender: 'ai', content: t.chat.uniqueExperience, translationKey: 'chat.uniqueExperience' });
+                    addMessage({ 
+                        sender: 'ai', 
+                        content: t.chat.treatmentMattersQuestion, 
+                        translationKey: 'chat.treatmentMattersQuestion',
+                        multiChoiceOptions: t.chat.treatmentMattersOptions,
+                        multiChoiceOptionKeys: ['chat.treatmentMattersOptions']
+                    });
                     setCurrentStep('q4_treatment_matters');
                 }
                 break;
                 
             case 'q3_therapist_time':
                 updateUserPreferences({ preferredContactTime: userInput });
-                addMessage({ sender: 'ai', content: `${t.chat.representativeContact} ${userPreferences.contactInfo}. ${t.chat.contactThankYou}` });
+                addMessage({ sender: 'ai', content: `${t.chat.representativeContact} ${userPreferences.contactInfo}. ${t.chat.contactThankYou}`, translationKey: 'chat.representativeContact' });
                 askForRating();
                 break;
 
             case 'q3_brings_here_other':
                 updateUserPreferences({ bringsHereToday: userInput });
-                addMessage({ sender: 'ai', content: t.chat.bringsHereOther });
-                addMessage({ sender: 'ai', content: t.chat.treatmentMattersQuestion, multiChoiceOptions: t.chat.treatmentMattersOptions });
+                addMessage({ sender: 'ai', content: t.chat.bringsHereOther, translationKey: 'chat.bringsHereOther' });
+                addMessage({ 
+                    sender: 'ai', 
+                    content: t.chat.treatmentMattersQuestion, 
+                    translationKey: 'chat.treatmentMattersQuestion',
+                    multiChoiceOptions: t.chat.treatmentMattersOptions,
+                    multiChoiceOptionKeys: ['chat.treatmentMattersOptions']
+                });
                 setCurrentStep('q4_treatment_matters');
                 break;
 
@@ -559,10 +620,16 @@ export default function ChatInterface() {
                 updateUserPreferences({ treatmentMatters });
 
                 if (treatmentMatters.includes("More") || treatmentMatters.includes("עוד")) {
-                    addMessage({ sender: 'ai', content: t.chat.treatmentMattersMore });
+                    addMessage({ sender: 'ai', content: t.chat.treatmentMattersMore, translationKey: 'chat.treatmentMattersMore' });
                     setCurrentStep('q4_treatment_matters_other');
                 } else {
-                    addMessage({ sender: 'ai', content: t.chat.touchStyleQuestion, options: t.chat.touchStyleOptions });
+                    addMessage({ 
+                        sender: 'ai', 
+                        content: t.chat.touchStyleQuestion, 
+                        translationKey: 'chat.touchStyleQuestion',
+                        options: t.chat.touchStyleOptions,
+                        optionKeys: ['chat.touchStyleOptions']
+                    });
                     setCurrentStep('q5_touch_style');
                 }
                 break;
@@ -572,32 +639,56 @@ export default function ChatInterface() {
                 const newMatters = [...existingMatters, userInput];
                 updateUserPreferences({ treatmentMatters: newMatters });
                 
-                addMessage({ sender: 'ai', content: t.chat.uniqueExperience });
-                addMessage({ sender: 'ai', content: t.chat.touchStyleQuestion, options: t.chat.touchStyleOptions });
+                addMessage({ sender: 'ai', content: t.chat.uniqueExperience, translationKey: 'chat.uniqueExperience' });
+                addMessage({ 
+                    sender: 'ai', 
+                    content: t.chat.touchStyleQuestion, 
+                    translationKey: 'chat.touchStyleQuestion',
+                    options: t.chat.touchStyleOptions,
+                    optionKeys: ['chat.touchStyleOptions']
+                });
                 setCurrentStep('q5_touch_style');
                 break;
 
             case 'q5_touch_style':
                 updateUserPreferences({ touchStyle: userInput });
-                addMessage({ sender: 'ai', content: t.chat.therapistPrefQuestion, options: t.chat.therapistPrefOptions });
+                addMessage({ 
+                    sender: 'ai', 
+                    content: t.chat.therapistPrefQuestion, 
+                    translationKey: 'chat.therapistPrefQuestion',
+                    options: t.chat.therapistPrefOptions,
+                    optionKeys: ['chat.therapistPrefOptions']
+                });
                 setCurrentStep('q5_therapist_pref');
                 break;
 
             case 'q5_therapist_pref':
                 updateUserPreferences({ therapistPreference: userInput });
-                addMessage({ sender: 'ai', content: t.chat.locationQuestion, options: t.chat.locationOptions });
+                addMessage({ 
+                    sender: 'ai', 
+                    content: t.chat.locationQuestion, 
+                    translationKey: 'chat.locationQuestion',
+                    options: t.chat.locationOptions,
+                    optionKeys: ['chat.locationOptions']
+                });
                 setCurrentStep('q5_location');
                 break;
 
             case 'q5_location':
                 updateUserPreferences({ sessionLocation: userInput });
-                addMessage({ sender: 'ai', content: t.chat.timeQuestion, options: t.chat.timeOptions });
+                addMessage({ 
+                    sender: 'ai', 
+                    content: t.chat.timeQuestion, 
+                    translationKey: 'chat.timeQuestion',
+                    options: t.chat.timeOptions,
+                    optionKeys: ['chat.timeOptions']
+                });
                 setCurrentStep('q5_time');
                 break;
 
             case 'q5_time':
                 updateUserPreferences({ preferredTime: userInput });
-                addMessage({ sender: 'ai', content: t.chat.locationLiveQuestion });
+                addMessage({ sender: 'ai', content: t.chat.locationLiveQuestion, translationKey: 'chat.locationLiveQuestion' });
                 setCurrentStep('q5_location_live');
                 break;
                 
@@ -606,14 +697,16 @@ export default function ChatInterface() {
                 addMessage({ 
                     sender: 'ai', 
                     content: t.chat.atmosphereQuestion, 
-                    options: t.chat.atmosphereOptions
+                    translationKey: 'chat.atmosphereQuestion',
+                    options: t.chat.atmosphereOptions,
+                    optionKeys: ['chat.atmosphereOptions']
                 });
                 setCurrentStep('q5_convo_style');
                 break;
 
             case 'q5_convo_style':
                 updateUserPreferences({ conversationStyle: userInput });
-                addMessage({ sender: 'ai', content: t.chat.additionalNotesQuestion });
+                addMessage({ sender: 'ai', content: t.chat.additionalNotesQuestion, translationKey: 'chat.additionalNotesQuestion' });
                 setCurrentStep('q6_additional_notes');
                 break;
 
@@ -622,7 +715,9 @@ export default function ChatInterface() {
                 addMessage({ 
                     sender: 'ai', 
                     content: t.chat.scentIntroQuestion,
-                    options: [t.chat.scentOptions.yes, t.chat.scentOptions.no]
+                    translationKey: 'chat.scentIntroQuestion',
+                    options: [t.chat.scentOptions.yes, t.chat.scentOptions.no],
+                    optionKeys: ['chat.scentOptions.yes', 'chat.scentOptions.no']
                 });
                 setCurrentStep('q7_scent_interest');
                 break;
@@ -632,19 +727,25 @@ export default function ChatInterface() {
                     updateUserPreferences({ wantsScentInfo: true });
                     addMessage({ 
                         sender: 'ai', 
-                        content: t.chat.scentPrefsQuestion
+                        content: t.chat.scentPrefsQuestion,
+                        translationKey: 'chat.scentPrefsQuestion'
                     });
                     setCurrentStep('q7_scent_prefs');
                 } else {
                     updateUserPreferences({ wantsScentInfo: false });
-                    addMessage({ sender: 'ai', content: t.chat.contactQuestion });
-                    setCurrentStep('q8_contact_info');
+                    // Skip scent preferences and go to contact
+                    addMessage({ 
+                        sender: 'ai', 
+                        content: t.chat.contactQuestion,
+                        translationKey: 'chat.contactQuestion'
+                    });
+                    setCurrentStep('q8_contact');
                 }
                 break;
 
             case 'q7_scent_prefs':
                 updateUserPreferences({ scentPreferences: userInput });
-                addMessage({ sender: 'ai', content: t.chat.contactQuestion });
+                addMessage({ sender: 'ai', content: t.chat.contactQuestion, translationKey: 'chat.contactQuestion' });
                 setCurrentStep('q8_contact_info');
                 break;
                 
@@ -654,7 +755,8 @@ export default function ChatInterface() {
                 if (!finalContactInfo || !isValidContactInfo(finalContactInfo)) {
                     addMessage({ 
                         sender: 'ai', 
-                        content: t.chat.contactInvalid
+                        content: t.chat.contactInvalid,
+                        translationKey: 'chat.contactInvalid'
                     });
                     return;
                 }
@@ -677,15 +779,15 @@ export default function ChatInterface() {
                     })
                     .filter(Boolean);
 
-                addMessage({ sender: 'ai', content: `${isRTL ? 'הנה הסיכום הסופי של ההעדפות שלך:' : 'Here is the final summary of your preferences:'}\n\n${summaryLines.join('\n')}` });
-                addMessage({ sender: 'ai', content: t.chat.finalSummaryIntro });
+                addMessage({ sender: 'ai', content: `${isRTL ? 'הנה הסיכום הסופי של ההעדפות שלך:' : 'Here is the final summary of your preferences:'}\n\n${summaryLines.join('\n')}`, translationKey: 'chat.finalSummaryHeader' });
+                addMessage({ sender: 'ai', content: t.chat.finalSummaryIntro, translationKey: 'chat.finalSummaryIntro' });
                 setCurrentStep('q8_agreement');
                 break;
 
             case 'q8_agreement':
                 updateUserPreferences({ hasAgreed: true });
-                addMessage({ sender: 'ai', content: t.chat.agreementThanks });
-                addMessage({ sender: 'ai', content: t.chat.findingTherapist });
+                addMessage({ sender: 'ai', content: t.chat.agreementThanks, translationKey: 'chat.agreementThanks' });
+                addMessage({ sender: 'ai', content: t.chat.findingTherapist, translationKey: 'chat.findingTherapist' });
                 setCurrentStep('final_recommendation');
                 break;
 
@@ -694,11 +796,11 @@ export default function ChatInterface() {
                 break;
 
             case 'complete':
-                addMessage({ sender: 'ai', content: isRTL ? "סיפקתי את כל המידע שיש לי כרגע. אם תרצה להתחיל חיפוש חדש, אתה יכול לומר 'התחל מחדש'." : "I've provided all the information I have for now. If you'd like to start a new search, you can say 'Start Over'." });
+                addMessage({ sender: 'ai', content: isRTL ? "סיפקתי את כל המידע שיש לי כרגע. אם תרצה להתחיל חיפוש חדש, אתה יכול לומר 'התחל מחדש'." : "I've provided all the information I have for now. If you'd like to start a new search, you can say 'Start Over'.", translationKey: 'chat.sessionComplete' });
                 break;
 
             default:
-                addMessage({ sender: 'ai', content: t.chat.errorGeneral });
+                addMessage({ sender: 'ai', content: t.chat.errorGeneral, translationKey: 'chat.errorGeneral' });
                 
                 // Re-ask the last question with more guidance based on the current step
                 const lastAiMessage = [...messages].reverse().find(m => m.sender === 'ai' && (m.options || m.multiChoiceOptions));
@@ -706,21 +808,26 @@ export default function ChatInterface() {
                 if (currentStep.includes('contact')) {
                     addMessage({ 
                         sender: 'ai', 
-                        content: isRTL ? "נא לספק מספר טלפון תקין (למשל, +972123456789) או כתובת טלגרם (שמתחילה ב-@)" : "Please provide a valid phone number (e.g., +1234567890) or Telegram handle (starting with @)"
+                        content: isRTL ? "נא לספק מספר טלפון תקין (למשל, +972123456789) או כתובת טלגרם (שמתחילה ב-@)" : "Please provide a valid phone number (e.g., +1234567890) or Telegram handle (starting with @)",
+                        translationKey: 'chat.contactValidation'
                     });
                 } else if (lastAiMessage) {
                     // Re-display the last question with options
                     addMessage({ 
                         sender: 'ai', 
                         content: isRTL ? "אנא בחר מהאפשרויות הזמינות או ספק תשובה ברורה:" : "Please select from the available options or provide a clear response:", 
+                        translationKey: 'chat.selectFromOptions',
                         options: lastAiMessage.options, 
-                        multiChoiceOptions: (lastAiMessage as any).multiChoiceOptions 
+                        optionKeys: (lastAiMessage as any).optionKeys,
+                        multiChoiceOptions: (lastAiMessage as any).multiChoiceOptions,
+                        multiChoiceOptionKeys: (lastAiMessage as any).multiChoiceOptionKeys 
                     });
                 } else {
                     // Generic fallback if we can't determine the context
                     addMessage({ 
                         sender: 'ai', 
-                        content: isRTL ? "בואו ננסה שוב. אנא ספק תשובה ברורה לשאלה." : "Let's try again. Please provide a clear response to the question."
+                        content: isRTL ? "בואו ננסה שוב. אנא ספק תשובה ברורה לשאלה." : "Let's try again. Please provide a clear response to the question.",
+                        translationKey: 'chat.provideClearResponse'
                     });
                 }
                 break;
@@ -745,15 +852,15 @@ export default function ChatInterface() {
                     <h1 className="text-lg md:text-xl font-semibold text-gray-800">Your AI Assistant</h1>
                     <div className="flex items-center gap-2">
                         <LanguageSwitcher />
-                        <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            onClick={closeChat} 
-                            className="rounded-full hover:bg-gray-100"
-                            aria-label="Close chat"
-                        >
-                            <X className="h-4 w-4 md:h-5 md:w-5 text-gray-500" />
-                        </Button>
+                    <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={closeChat} 
+                        className="rounded-full hover:bg-gray-100"
+                        aria-label="Close chat"
+                    >
+                        <X className="h-4 w-4 md:h-5 md:w-5 text-gray-500" />
+                    </Button>
                     </div>
                 </header>
     
