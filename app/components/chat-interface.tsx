@@ -739,7 +739,7 @@ export default function ChatInterface() {
                         content: t.chat.contactQuestion,
                         translationKey: 'chat.contactQuestion'
                     });
-                    setCurrentStep('q8_contact');
+                    setCurrentStep('q8_contact_info');
                 }
                 break;
 
