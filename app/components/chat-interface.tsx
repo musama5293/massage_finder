@@ -714,6 +714,16 @@ export default function ChatInterface() {
                 updateUserPreferences({ additionalNotes: userInput });
                 addMessage({ 
                     sender: 'ai', 
+                    content: t.chat.budgetQuestion,
+                    translationKey: 'chat.budgetQuestion'
+                });
+                setCurrentStep('q6_budget');
+                break;
+
+            case 'q6_budget':
+                updateUserPreferences({ budget: userInput });
+                addMessage({ 
+                    sender: 'ai', 
                     content: t.chat.scentIntroQuestion,
                     translationKey: 'chat.scentIntroQuestion',
                     options: [t.chat.scentOptions.yes, t.chat.scentOptions.no],
@@ -995,6 +1005,7 @@ export default function ChatInterface() {
                                   preferred_time: userPreferences.preferredTime,
                                   conversation_style: userPreferences.conversationStyle,
                                   additional_notes: userPreferences.additionalNotes,
+                                  budget: userPreferences.budget,
                                   scent_preferences: userPreferences.scentPreferences,
                                   contact_info: userPreferences.contactInfo,
                                   location_live: userPreferences.locationLive,

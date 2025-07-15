@@ -124,6 +124,9 @@ export interface Translations {
     
     additionalNotesQuestion: string;
     
+    // Budget Question
+    budgetQuestion: string;
+    
     // Scent Questions
     scentIntroQuestion: string;
     scentOptions: {
@@ -221,6 +224,7 @@ export interface Translations {
     preferredTime: string;
     conversationStyle: string;
     additionalNotes: string;
+    budget: string;
     scentPreferences: string;
     contactInfo: string;
   };
@@ -407,6 +411,7 @@ export const translations: Record<Language, Translations> = {
         "No music"
       ],
       additionalNotesQuestion: "Anything else you'd like your therapist to know about what makes you feel good?",
+      budgetQuestion: "What's your budget for the session?",
       scentIntroQuestion: "Science has shown that certain scent molecules can help ease muscle tension, reduce Cortisol levels and boost relaxation. Want us to create a custom therapeutic scent just for you, based on real science?",
       scentOptions: {
         yes: "Yes, please",
@@ -488,6 +493,7 @@ export const translations: Record<Language, Translations> = {
       preferredTime: "Preferred Time",
       conversationStyle: "Session Atmosphere",
       additionalNotes: "Additional Notes",
+      budget: "Budget",
       scentPreferences: "Scent Preferences",
       contactInfo: "Contact Information"
     },
@@ -662,6 +668,7 @@ export const translations: Record<Language, Translations> = {
         "בלי מוזיקה"
       ],
       additionalNotesQuestion: "יש משהו נוסף שהיית רוצה שהמטפל ידע עליך כדי שתהיה מרוצה?",
+      budgetQuestion: "מה התקציב שלך לטיפול?",
       scentIntroQuestion: "מחקרים מראים שיש שמנים שיכולים לעזור בהפגת מתחים בשרירים, הפחתת רמות קורטיזול ושיפור ההרפיה. רוצה שניצור עבורך ניחוח טיפולי מותאם אישית, מבוסס על מדע אמיתי?",
       scentOptions: {
         yes: "כן, בבקשה",
@@ -743,6 +750,7 @@ export const translations: Record<Language, Translations> = {
       preferredTime: "זמן מועדף",
       conversationStyle: "אווירת טיפול",
       additionalNotes: "הערות נוספות",
+      budget: "תקציב",
       scentPreferences: "העדפות ריח",
       contactInfo: "פרטי קשר"
     },

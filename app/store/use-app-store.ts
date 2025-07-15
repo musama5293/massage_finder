@@ -56,6 +56,7 @@ interface UserPreferences {
   conversationStyle?: string
   // Q6
   additionalNotes?: string
+  budget?: string
   // Q7
   wantsScentInfo?: boolean
   scentPreferences?: string

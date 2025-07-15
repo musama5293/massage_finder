@@ -22,6 +22,7 @@ interface SessionData {
   preferred_time: string
   conversation_style: string
   additional_notes: string
+  budget: string
   scent_preferences: string
   contact_info: string
   location_live: string
@@ -273,6 +274,7 @@ export default function AdminDashboard() {
                           <TableHead>Preferred Time</TableHead>
                           <TableHead>Conversation Style</TableHead>
                           <TableHead>Additional Notes</TableHead>
+                          <TableHead>Budget</TableHead>
                           <TableHead>Scent Preferences</TableHead>
                           <TableHead>Contact Info</TableHead>
                           <TableHead>Rating</TableHead>
@@ -302,6 +304,7 @@ export default function AdminDashboard() {
                             <TableCell>{session.preferred_time || 'N/A'}</TableCell>
                             <TableCell>{session.conversation_style || 'N/A'}</TableCell>
                             <TableCell className="max-w-xs truncate">{session.additional_notes || 'N/A'}</TableCell>
+                            <TableCell>{session.budget || 'N/A'}</TableCell>
                             <TableCell>{session.scent_preferences || 'N/A'}</TableCell>
                             <TableCell className="font-mono text-sm">
                               {session.contact_info || 'N/A'}
