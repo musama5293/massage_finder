@@ -246,8 +246,18 @@ export default function ChatInterface() {
             addMessage({ sender: 'ai', content: '', therapistInfo: therapistData });
             addMessage({ 
                 sender: 'ai', 
-                content: `${t.chat.representativeContact} ${userPreferences.contactInfo} ${isRTL ? 'לתת לך מידע נוסף ולתאמן.' : 'to give you more information and coordinate.'}\n${t.chat.ratingQuestion}`,
+                content: `${t.chat.representativeContact} ${userPreferences.contactInfo}.`,
                 translationKey: 'chat.representativeContact'
+            });
+            addMessage({ 
+                sender: 'ai', 
+                content: t.chat.coordinateMessage,
+                translationKey: 'chat.coordinateMessage'
+            });
+            addMessage({ 
+                sender: 'ai', 
+                content: t.chat.ratingQuestion,
+                translationKey: 'chat.ratingQuestion'
             });
             setCurrentStep('q9_rating');
         };
