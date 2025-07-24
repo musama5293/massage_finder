@@ -259,7 +259,8 @@ export const useAppStore = create<AppState>((set, get) => ({
           translatedMultiChoiceOptions = [];
           for (const optionKey of uniqueMultiChoiceKeys) {
             if (optionKey.includes('treatmentMattersOptions')) {
-              translatedMultiChoiceOptions = translations.chat.treatmentMattersOptions;
+              const treatmentOptions = translations.chat.treatmentMattersOptions;
+              translatedMultiChoiceOptions = Array.isArray(treatmentOptions) ? treatmentOptions : [];
               break;
             } else {
               const optionKeys = optionKey.split('.');
@@ -283,7 +284,7 @@ export const useAppStore = create<AppState>((set, get) => ({
           ...message,
           content: translatedContent || message.content,
           options: translatedOptions,
-          multiChoiceOptions: translatedMultiChoiceOptions
+          multiChoiceOptions: Array.isArray(translatedMultiChoiceOptions) ? translatedMultiChoiceOptions : []
         };
       }
       return message;

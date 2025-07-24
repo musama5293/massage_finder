@@ -1054,7 +1054,7 @@ export default function ChatInterface() {
                   </div>
     
                     <div className="p-3 md:p-4 border-t border-gray-200/80 bg-white/80 shrink-0">
-                        {lastMessage?.multiChoiceOptions && !isTyping && (
+                        {lastMessage?.multiChoiceOptions && Array.isArray(lastMessage.multiChoiceOptions) && !isTyping && (
                             <div className="mb-2 flex flex-col items-start gap-2">
                                 <div className="flex flex-wrap gap-2">
                                     {lastMessage.multiChoiceOptions.map((option: string) => (
@@ -1068,7 +1068,7 @@ export default function ChatInterface() {
                             </div>
                         )}
                         
-                        {lastMessage?.options && !isTyping && (
+                        {lastMessage?.options && Array.isArray(lastMessage.options) && !isTyping && (
                             <div className="mb-2 flex flex-wrap gap-2">
                                 {lastMessage.options.map((option: string) => (
                                     <button key={option} onClick={() => handleOptionClick(option)} className="bg-cyan-600 text-white text-sm md:text-base px-3 md:px-4 py-2 rounded-full border border-cyan-700 hover:bg-cyan-700 transition-all font-medium shadow-md">
