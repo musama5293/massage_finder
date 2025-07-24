@@ -117,14 +117,14 @@ export const useAppStore = create<AppState>((set, get) => ({
 
     get().addMessage({
       sender: "ai",
-      content: translations?.chat?.welcome || "Let's find the therapist and therapy that's just right for you…",
+      content: translations?.chat?.welcome || "",
       translationKey: "chat.welcome"
     })
     
     setTimeout(() => {
         get().addMessage({
             sender: "ai",
-            content: translations?.chat?.introduction || "Nice to meet you! I'm Tomer – a professional massage therapist and coordinator between skilled therapists and clients seeking unique experiences across the country. If you're a therapist looking to grow your business, feel free to reach out at 09-7961414 or answer below, \"I am a therapist.\"",
+            content: translations?.chat?.introduction || "",
             translationKey: "chat.introduction"
         });
         get().setCurrentStep("introduction");
@@ -133,7 +133,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     setTimeout(() => {
         get().addMessage({
             sender: "ai",
-            content: translations?.chat?.moodQuestion || "How are you today?",
+            content: translations?.chat?.moodQuestion || "",
             translationKey: "chat.moodQuestion"
         });
         get().setCurrentStep("q1_mood");
@@ -282,9 +282,9 @@ export const useAppStore = create<AppState>((set, get) => ({
 
         return {
           ...message,
-          content: translatedContent || message.content,
-          options: translatedOptions,
-          multiChoiceOptions: Array.isArray(translatedMultiChoiceOptions) ? translatedMultiChoiceOptions : []
+          content: (translatedContent && typeof translatedContent === 'string') ? translatedContent : message.content,
+          options: translatedOptions || message.options,
+          multiChoiceOptions: Array.isArray(translatedMultiChoiceOptions) ? translatedMultiChoiceOptions : (message.multiChoiceOptions || [])
         };
       }
       return message;

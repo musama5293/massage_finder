@@ -17,10 +17,17 @@ export default function TherapeuticScentsApp() {
   const [contactModalOpen, setContactModalOpen] = useState(false)
   const { t, isRTL } = useLanguage()
   
-  // Auto-start chat when component mounts
+  // Auto-start chat when component mounts or language changes
   useEffect(() => {
-    if (showChat && !useAppStore.getState().messages.length) {
-      startChat(t)
+    if (showChat) {
+      const currentMessages = useAppStore.getState().messages
+      if (!currentMessages.length) {
+        // First time initialization
+        startChat(t)
+      } else {
+        // Retranslate existing messages when language changes
+        useAppStore.getState().retranslateMessages(t)
+      }
     }
   }, [t, startChat, showChat])
   
