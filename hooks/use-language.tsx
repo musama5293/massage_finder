@@ -19,18 +19,14 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [mounted, setMounted] = useState(false)
   const retranslateMessages = useAppStore(state => state.retranslateMessages)
 
-  // Mark as mounted and load language from localStorage
+  // Always start with English (no localStorage persistence)
   useEffect(() => {
     setMounted(true)
-    const savedLanguage = localStorage.getItem('language') as Language
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'he')) {
-      setLanguage(savedLanguage)
-    }
   }, [])
 
-  // Handle language changes: save to localStorage, set document direction, and retranslate
+  // Handle language changes: set document direction and retranslate
   useEffect(() => {
-    localStorage.setItem('language', language)
+    if (!mounted) return // Don't run until after mount
     
     // Set document direction for RTL support
     if (language === 'he') {
@@ -41,9 +37,11 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       document.documentElement.lang = 'en'
     }
 
-    // Retranslate all existing chat messages
-    retranslateMessages(translations[language])
-  }, [language, retranslateMessages])
+    // Force retranslation of all messages
+    if (typeof retranslateMessages === 'function') {
+      retranslateMessages(translations[language])
+    }
+  }, [language, mounted, retranslateMessages])
 
   const value = {
     language,

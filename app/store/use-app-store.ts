@@ -181,110 +181,71 @@ export const useAppStore = create<AppState>((set, get) => ({
   retranslateMessages: (translations) => set((state) => ({
     messages: state.messages.map(message => {
       if (message.sender === 'ai' && message.translationKey) {
-        // Get the translation using dot notation (e.g., "chat.welcome")
+        // Get the translation using dot notation
         const keys = message.translationKey.split('.');
         let translatedContent = translations;
         for (const key of keys) {
           translatedContent = translatedContent?.[key];
         }
         
-        // Handle options - for arrays, use the array directly from translations
-        let translatedOptions = message.options;
-        let translatedMultiChoiceOptions = message.multiChoiceOptions;
-        
-        // Handle specific option arrays based on the message content/context
-        if (message.options && message.optionKeys) {
-          // Use Set to avoid duplicates and only process unique option keys
-          const uniqueOptionKeys = [...new Set(message.optionKeys)];
-          
-          translatedOptions = [];
-          for (const optionKey of uniqueOptionKeys) {
+        // Force update content to translated version
+        const newContent = (translatedContent && typeof translatedContent === 'string') 
+          ? translatedContent 
+          : message.content;
+
+        // Handle options translation
+        let newOptions = message.options;
+        if (message.optionKeys) {
+          for (const optionKey of message.optionKeys) {
             if (optionKey.includes('touchStyleOptions')) {
-              translatedOptions = translations.chat.touchStyleOptions;
-              break;
+              newOptions = translations.chat?.touchStyleOptions || message.options;
             } else if (optionKey.includes('therapistPrefOptions')) {
-              translatedOptions = translations.chat.therapistPrefOptions;
-              break;
+              newOptions = translations.chat?.therapistPrefOptions || message.options;
             } else if (optionKey.includes('locationOptions')) {
-              translatedOptions = translations.chat.locationOptions;
-              break;
+              newOptions = translations.chat?.locationOptions || message.options;
             } else if (optionKey.includes('timeOptions')) {
-              translatedOptions = translations.chat.timeOptions;
-              break;
+              newOptions = translations.chat?.timeOptions || message.options;
             } else if (optionKey.includes('atmosphereOptions')) {
-              translatedOptions = translations.chat.atmosphereOptions;
-              break;
+              newOptions = translations.chat?.atmosphereOptions || message.options;
             } else if (optionKey.includes('bringsHereOptions')) {
-              translatedOptions = [
-                translations.chat.bringsHereOptions.therapist,
-                translations.chat.bringsHereOptions.trainee,
-                translations.chat.bringsHereOptions.consult,
-                translations.chat.bringsHereOptions.massage,
-                translations.chat.bringsHereOptions.more
-              ];
-              break;
+              newOptions = [
+                translations.chat?.bringsHereOptions?.therapist,
+                translations.chat?.bringsHereOptions?.trainee,
+                translations.chat?.bringsHereOptions?.consult,
+                translations.chat?.bringsHereOptions?.massage,
+                translations.chat?.bringsHereOptions?.more
+              ].filter(Boolean);
             } else if (optionKey.includes('experienceOptions')) {
-              translatedOptions = [
-                translations.chat.experienceOptions.yes,
-                translations.chat.experienceOptions.no
-              ];
-              break;
+              newOptions = [
+                translations.chat?.experienceOptions?.yes,
+                translations.chat?.experienceOptions?.no
+              ].filter(Boolean);
             } else if (optionKey.includes('scentOptions')) {
-              translatedOptions = [
-                translations.chat.scentOptions.yes,
-                translations.chat.scentOptions.no
-              ];
-              break;
-            } else {
-              // Handle individual option keys
-              const optionKeys = optionKey.split('.');
-              let translatedOption = translations;
-              for (const key of optionKeys) {
-                translatedOption = translatedOption?.[key];
-              }
-              if (translatedOption && typeof translatedOption === 'string') {
-                if (!translatedOptions.includes(translatedOption)) {
-                  translatedOptions.push(translatedOption);
-                }
-              }
+              newOptions = [
+                translations.chat?.scentOptions?.yes,
+                translations.chat?.scentOptions?.no
+              ].filter(Boolean);
             }
           }
         }
 
-        // Handle multi-choice options
-        if (message.multiChoiceOptions && message.multiChoiceOptionKeys) {
-          // Use Set to avoid duplicates
-          const uniqueMultiChoiceKeys = [...new Set(message.multiChoiceOptionKeys)];
-          
-          translatedMultiChoiceOptions = [];
-          for (const optionKey of uniqueMultiChoiceKeys) {
+        // Handle multi-choice options translation
+        let newMultiChoiceOptions = message.multiChoiceOptions;
+        if (message.multiChoiceOptionKeys) {
+          for (const optionKey of message.multiChoiceOptionKeys) {
             if (optionKey.includes('treatmentMattersOptions')) {
-              const treatmentOptions = translations.chat.treatmentMattersOptions;
-              translatedMultiChoiceOptions = Array.isArray(treatmentOptions) ? treatmentOptions : [];
+              const treatmentOptions = translations.chat?.treatmentMattersOptions;
+              newMultiChoiceOptions = Array.isArray(treatmentOptions) ? treatmentOptions : message.multiChoiceOptions;
               break;
-            } else {
-              const optionKeys = optionKey.split('.');
-              let translatedOption = translations;
-              for (const key of optionKeys) {
-                translatedOption = translatedOption?.[key];
-              }
-              if (Array.isArray(translatedOption)) {
-                translatedMultiChoiceOptions = translatedOption;
-                break;
-              } else if (translatedOption && typeof translatedOption === 'string') {
-                if (!translatedMultiChoiceOptions.includes(translatedOption)) {
-                  translatedMultiChoiceOptions.push(translatedOption);
-                }
-              }
             }
           }
         }
 
         return {
           ...message,
-          content: (translatedContent && typeof translatedContent === 'string') ? translatedContent : message.content,
-          options: translatedOptions || message.options,
-          multiChoiceOptions: Array.isArray(translatedMultiChoiceOptions) ? translatedMultiChoiceOptions : (message.multiChoiceOptions || [])
+          content: newContent,
+          options: newOptions,
+          multiChoiceOptions: newMultiChoiceOptions
         };
       }
       return message;

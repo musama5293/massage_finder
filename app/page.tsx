@@ -25,8 +25,9 @@ export default function TherapeuticScentsApp() {
         // First time initialization
         startChat(t)
       } else {
-        // Retranslate existing messages when language changes
-        useAppStore.getState().retranslateMessages(t)
+        // Force complete retranslation when language changes
+        const retranslateMessages = useAppStore.getState().retranslateMessages
+        retranslateMessages(t)
       }
     }
   }, [t, startChat, showChat])
