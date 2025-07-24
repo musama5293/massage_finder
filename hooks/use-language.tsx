@@ -9,23 +9,26 @@ interface LanguageContextType {
   setLanguage: (language: Language) => void
   t: Translations
   isRTL: boolean
+  mounted: boolean
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>('en')
+  const [mounted, setMounted] = useState(false)
   const retranslateMessages = useAppStore(state => state.retranslateMessages)
 
-  // Load language from localStorage on mount
+  // Mark as mounted and load language from localStorage
   useEffect(() => {
+    setMounted(true)
     const savedLanguage = localStorage.getItem('language') as Language
     if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'he')) {
       setLanguage(savedLanguage)
     }
   }, [])
 
-  // Save language to localStorage when it changes and retranslate messages
+  // Handle language changes: save to localStorage, set document direction, and retranslate
   useEffect(() => {
     localStorage.setItem('language', language)
     
@@ -46,7 +49,8 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     language,
     setLanguage,
     t: translations[language],
-    isRTL: language === 'he'
+    isRTL: language === 'he',
+    mounted
   }
 
   return (
