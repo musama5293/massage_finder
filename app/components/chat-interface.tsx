@@ -724,16 +724,6 @@ export default function ChatInterface() {
                 updateUserPreferences({ additionalNotes: userInput });
                 addMessage({ 
                     sender: 'ai', 
-                    content: t.chat.budgetQuestion,
-                    translationKey: 'chat.budgetQuestion'
-                });
-                setCurrentStep('q6_budget');
-                break;
-
-            case 'q6_budget':
-                updateUserPreferences({ budget: userInput });
-                addMessage({ 
-                    sender: 'ai', 
                     content: t.chat.scentIntroQuestion,
                     translationKey: 'chat.scentIntroQuestion',
                     options: [t.chat.scentOptions.yes, t.chat.scentOptions.no],
@@ -782,9 +772,21 @@ export default function ChatInterface() {
                 }
                 updateUserPreferences({ contactInfo: finalContactInfo });
                 
-                // Now show the summary with all information including contact
+                // Ask for budget before showing the final summary
+                addMessage({ 
+                    sender: 'ai', 
+                    content: t.chat.budgetQuestion,
+                    translationKey: 'chat.budgetQuestion'
+                });
+                setCurrentStep('q8_budget');
+                break;
+
+            case 'q8_budget':
+                updateUserPreferences({ budget: userInput });
+                
+                // Now show the summary with all information including contact and budget
                 // Make sure contact info is included in the summary
-                const updatedPreferences = { ...userPreferences, contactInfo: finalContactInfo };
+                const updatedPreferences = { ...userPreferences, contactInfo: userPreferences.contactInfo, budget: userInput };
                 
                 const summaryLines = Object.entries(updatedPreferences)
                     .map(([key, value]) => {
