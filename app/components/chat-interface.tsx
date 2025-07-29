@@ -948,13 +948,15 @@ export default function ChatInterface() {
                                                             }, 200);
                                                         }, 1500);
                                                     }}
-                                                    className={`absolute ${message.sender === 'user' ? 'left-1' : 'right-1'} top-1 p-1.5 rounded-full 
+                                                    className={`absolute ${isRTL 
+                                                        ? (message.sender === 'user' ? 'right-1' : 'left-1') 
+                                                        : (message.sender === 'user' ? 'left-1' : 'right-1')} top-1 p-1.5 rounded-full 
                                                         ${message.sender === 'user' 
                                                             ? 'bg-cyan-700 hover:bg-cyan-800 text-white' 
                                                             : 'bg-gray-300 hover:bg-gray-400 text-gray-700'} 
                                                         opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 transition-opacity`}
-                                                    title="Copy message"
-                                                    aria-label="Copy message"
+                                                    title={t.chat.copyMessage}
+                                                    aria-label={t.chat.copyMessage}
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
