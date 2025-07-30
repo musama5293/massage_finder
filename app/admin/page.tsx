@@ -13,6 +13,7 @@ import { supabase } from "@/lib/supabaseClient"
 interface SessionData {
   session_id: string
   created_at: string
+  form_completed_at?: string
   mood: string
   brings_here_today: string
   treatment_matters: string[]
@@ -48,6 +49,16 @@ export default function AdminDashboard() {
   const [sessions, setSessions] = useState<SessionData[]>([])
   const [contacts, setContacts] = useState<ContactMessage[]>([])
   const [loading, setLoading] = useState(false)
+
+  // Function to make Telegram usernames clickable (removes @ symbol)
+  const makeTelegramClickable = (text: string) => {
+    if (!text) return 'N/A'
+    // Replace @username with clickable link, removing the @ symbol
+    return text.replace(/(@[a-zA-Z0-9_]{4,31})/g, (match) => {
+      const username = match.substring(1) // Remove the @ symbol
+      return `<a href="https://t.me/${username}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">${match}</a>`
+    })
+  }
 
   const ADMIN_PASSWORD = "TherapeuticScents2024!" // Change this to your desired password
 
@@ -264,7 +275,8 @@ export default function AdminDashboard() {
                       <TableHeader>
                         <TableRow>
                           <TableHead>Session ID</TableHead>
-                          <TableHead>Date</TableHead>
+                          <TableHead>Created</TableHead>
+                          <TableHead>Form Completed</TableHead>
                           <TableHead>Mood</TableHead>
                           <TableHead>Purpose</TableHead>
                           <TableHead>Treatment Matters</TableHead>
@@ -290,6 +302,12 @@ export default function AdminDashboard() {
                               {new Date(session.created_at).toLocaleDateString()}
                             </TableCell>
                             <TableCell>
+                              {session.form_completed_at 
+                                ? new Date(session.form_completed_at).toLocaleDateString() + ' ' + new Date(session.form_completed_at).toLocaleTimeString()
+                                : 'N/A'
+                              }
+                            </TableCell>
+                            <TableCell>
                               <Badge variant="outline">{session.mood || 'N/A'}</Badge>
                             </TableCell>
                             <TableCell>{session.brings_here_today || 'N/A'}</TableCell>
@@ -307,7 +325,9 @@ export default function AdminDashboard() {
                             <TableCell>{session.budget || 'N/A'}</TableCell>
                             <TableCell>{session.scent_preferences || 'N/A'}</TableCell>
                             <TableCell className="font-mono text-sm">
-                              {session.contact_info || 'N/A'}
+                              <div dangerouslySetInnerHTML={{ 
+                                __html: makeTelegramClickable(session.contact_info || 'N/A') 
+                              }} />
                             </TableCell>
                             <TableCell>
                               {session.experience_rating ? `${session.experience_rating} / 10` : 'N/A'}

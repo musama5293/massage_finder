@@ -77,6 +77,7 @@ interface AppState {
   recommendedTherapist: any | null
   showResearchModal: boolean
   messageIdCounter: number
+  isChatStarted: boolean
   // Actions
   startChat: (translations?: any) => void
   closeChat: () => void
@@ -101,9 +102,15 @@ export const useAppStore = create<AppState>((set, get) => ({
   recommendedTherapist: null,
   showResearchModal: false,
   messageIdCounter: 0,
+  isChatStarted: false,
 
   // Actions
   startChat: (translations) => {
+    // Prevent multiple starts
+    if (get().isChatStarted) {
+      return
+    }
+    
     // Generate a text-based session ID with timestamp
     const sessionId = `session_${Date.now()}`
     set({
@@ -113,6 +120,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       messages: [],
       currentStep: "welcome",
       messageIdCounter: 0,
+      isChatStarted: true,
     })
 
     get().addMessage({
@@ -172,6 +180,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     userPreferences: {},
     sessionId: '',
     messageIdCounter: 0,
+    isChatStarted: false,
   }),
   
   closeChat: () => set({
@@ -192,7 +201,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         const newContent = (translatedContent && typeof translatedContent === 'string') 
           ? translatedContent 
           : message.content;
-
+        
         // Handle options translation
         let newOptions = message.options;
         if (message.optionKeys) {

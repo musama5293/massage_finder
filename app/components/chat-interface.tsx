@@ -34,6 +34,8 @@ const isValidContactInfo = (input: string): boolean => {
   return isValidPhoneNumber(trimmed) || isValidTelegramHandle(trimmed);
 }
 
+
+
 const TherapistCard = ({ therapist }: { therapist: any }) => {
     const { t } = useLanguage()
     
@@ -305,6 +307,8 @@ export default function ChatInterface() {
                                 location_live: preferencesToSave.locationLive,
                                 experience_rating: experienceRating,
                                 wants_scent_info: preferencesToSave.wantsScentInfo,
+                                budget: preferencesToSave.budget,
+                                form_completed_at: new Date().toISOString(),
                             }
                         ], {
                             onConflict: 'session_id',
@@ -716,11 +720,21 @@ export default function ChatInterface() {
 
             case 'q5_convo_style':
                 updateUserPreferences({ conversationStyle: userInput });
-                addMessage({ sender: 'ai', content: t.chat.additionalNotesQuestion, translationKey: 'chat.additionalNotesQuestion' });
-                setCurrentStep('q6_additional_notes');
+                addMessage({ 
+                    sender: 'ai', 
+                    content: t.chat.budgetQuestion,
+                    translationKey: 'chat.budgetQuestion'
+                });
+                setCurrentStep('q6_budget');
                 break;
 
-            case 'q6_additional_notes':
+            case 'q6_budget':
+                updateUserPreferences({ budget: userInput });
+                addMessage({ sender: 'ai', content: t.chat.additionalNotesQuestion, translationKey: 'chat.additionalNotesQuestion' });
+                setCurrentStep('q7_additional_notes');
+                break;
+
+            case 'q7_additional_notes':
                 updateUserPreferences({ additionalNotes: userInput });
                 addMessage({ 
                     sender: 'ai', 
@@ -729,10 +743,10 @@ export default function ChatInterface() {
                     options: [t.chat.scentOptions.yes, t.chat.scentOptions.no],
                     optionKeys: ['chat.scentOptions.yes', 'chat.scentOptions.no']
                 });
-                setCurrentStep('q7_scent_interest');
+                setCurrentStep('q8_scent_interest');
                 break;
                 
-            case 'q7_scent_interest':
+            case 'q8_scent_interest':
                 if (lowerCaseInput.includes('yes') || lowerCaseInput.includes('כן')) {
                     updateUserPreferences({ wantsScentInfo: true });
                     addMessage({ 
@@ -740,7 +754,7 @@ export default function ChatInterface() {
                         content: t.chat.scentPrefsQuestion,
                         translationKey: 'chat.scentPrefsQuestion'
                     });
-                    setCurrentStep('q7_scent_prefs');
+                    setCurrentStep('q9_scent_prefs');
                 } else {
                     updateUserPreferences({ wantsScentInfo: false });
                     // Skip scent preferences and go to contact
@@ -749,17 +763,17 @@ export default function ChatInterface() {
                         content: t.chat.contactQuestion,
                         translationKey: 'chat.contactQuestion'
                     });
-                    setCurrentStep('q8_contact_info');
+                    setCurrentStep('q9_contact_info');
                 }
                 break;
 
-            case 'q7_scent_prefs':
+            case 'q9_scent_prefs':
                 updateUserPreferences({ scentPreferences: userInput });
                 addMessage({ sender: 'ai', content: t.chat.contactQuestion, translationKey: 'chat.contactQuestion' });
-                setCurrentStep('q8_contact_info');
+                setCurrentStep('q9_contact_info');
                 break;
                 
-            case 'q8_contact_info':
+            case 'q9_contact_info':
                 // Validate contact info (phone number or Telegram)
                 const finalContactInfo = userInput.trim();
                 if (!finalContactInfo || !isValidContactInfo(finalContactInfo)) {
@@ -772,21 +786,8 @@ export default function ChatInterface() {
                 }
                 updateUserPreferences({ contactInfo: finalContactInfo });
                 
-                // Ask for budget before showing the final summary
-                addMessage({ 
-                    sender: 'ai', 
-                    content: t.chat.budgetQuestion,
-                    translationKey: 'chat.budgetQuestion'
-                });
-                setCurrentStep('q8_budget');
-                break;
-
-            case 'q8_budget':
-                updateUserPreferences({ budget: userInput });
-                
-                // Now show the summary with all information including contact and budget
-                // Make sure contact info is included in the summary
-                const updatedPreferences = { ...userPreferences, contactInfo: userPreferences.contactInfo, budget: userInput };
+                // Show the final summary with all information
+                const updatedPreferences = { ...userPreferences, contactInfo: finalContactInfo };
                 
                 const summaryLines = Object.entries(updatedPreferences)
                     .map(([key, value]) => {
@@ -802,16 +803,25 @@ export default function ChatInterface() {
                     .filter(Boolean);
 
                 addMessage({ sender: 'ai', content: `${isRTL ? 'הנה הסיכום הסופי של ההעדפות שלך:' : 'Here is the final summary of your preferences:'}\n\n${summaryLines.join('\n')}`, translationKey: 'chat.finalSummaryHeader' });
-                addMessage({ sender: 'ai', content: t.chat.finalSummaryIntro, translationKey: 'chat.finalSummaryIntro' });
-                setCurrentStep('q8_agreement');
+                addMessage({ 
+                    sender: 'ai', 
+                    content: t.chat.finalSummaryIntro, 
+                    translationKey: 'chat.finalSummaryIntro',
+                    options: [isRTL ? 'המשך' : 'Continue']
+                });
+                setCurrentStep('q9_agreement');
                 break;
 
-            case 'q8_agreement':
+
+
+            case 'q9_agreement':
                 updateUserPreferences({ hasAgreed: true });
-                addMessage({ sender: 'ai', content: t.chat.agreementThanks, translationKey: 'chat.agreementThanks' });
+                // User clicked Continue, go straight to therapist recommendation
                 addMessage({ sender: 'ai', content: t.chat.findingTherapist, translationKey: 'chat.findingTherapist' });
                 setCurrentStep('final_recommendation');
                 break;
+
+
 
             case 'q9_rating':
                 // This case is handled by the RatingStars component
@@ -1023,7 +1033,8 @@ export default function ChatInterface() {
                                   scent_preferences: userPreferences.scentPreferences,
                                   contact_info: userPreferences.contactInfo,
                                   location_live: userPreferences.locationLive,
-                                  wants_scent_info: userPreferences.wantsScentInfo
+                                  wants_scent_info: userPreferences.wantsScentInfo,
+                                  form_completed_at: new Date().toISOString()
                                 };
                                 
                                 console.log("Upserting session with data:", sessionData);

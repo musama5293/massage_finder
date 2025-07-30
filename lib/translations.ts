@@ -183,6 +183,7 @@ export interface Translations {
     contactValidationError: string;
     selectFromOptions: string;
     provideClearResponse: string;
+    continueToTherapist: string;
     
     // Therapist Info
     therapistCard: {
@@ -411,14 +412,14 @@ export const translations: Record<Language, Translations> = {
         "No music"
       ],
       additionalNotesQuestion: "Q14: Anything else you'd like your therapist to know about what makes you feel good?",
-      budgetQuestion: "Q17: How much would you like to spend on the massage?",
+      budgetQuestion: "Q14: How much would you like to spend on the massage?",
       scentIntroQuestion: "Q15: Science has shown that certain scent molecules can help ease muscle tension, reduce Cortisol levels and boost relaxation. Want us to create a custom therapeutic scent just for you, based on real science?",
       scentOptions: {
         yes: "Yes, please",
         no: "No, thanks"
       },
       scentPrefsQuestion: "Q16: Tell us your favourite perfumes — it'll help us get to know your scent vibe and design an effective and pleasing functional scent for your session",
-      contactQuestion: "Q16: To connect you with the perfect therapist, please provide your phone number or Telegram handle so we can reach you.",
+      contactQuestion: "Q17: To connect you with the perfect therapist, please provide your phone number or Telegram handle so we can reach you.",
       contactValidation: "Please provide a valid phone number (e.g., +1234567890) or Telegram handle (starting with @)",
       contactConfirmation: "Thank you! We'll be in touch shortly at",
       recommendationIntro: "Q18: Based on your preferences, here's a therapist we recommend for you:",
@@ -448,8 +449,9 @@ export const translations: Record<Language, Translations> = {
       uniqueExperience: "Q6: I see- that's cool…. We want to give you a unique experience that truly meets your needs.",
       treatmentMattersMore: "You selected 'More'. Could you please specify what else matters to you?",
       scentQuestion: "Do you have any specific scent preferences or sensitivities we should know about?",
-      finalSummaryIntro: "Just one last thing before we connect you with the therapist — your (anonymous) answers help us improve. Thanks for making us better!",
-      agreementThanks: "Thanks for making us better!",
+          finalSummaryIntro: "Just one last thing before we connect you with the therapist — your (anonymous) answers help us improve. Thanks for making us better!",
+    agreementThanks: "Thanks for making us better! Click 'Continue' to see your recommended therapist and get connected!",
+    continueToTherapist: "Click 'Continue' to see your recommended therapist and get connected!",
       findingTherapist: "We'll now find the perfect therapist for you.",
       representativeContact: "A representative will be contacting you shortly at",
       therapistCard: {
@@ -599,7 +601,7 @@ export const translations: Record<Language, Translations> = {
       researchNo: 'נהדר! הנה סיכום המחקר...',
       therapistContactQuestion: 'מה מספר הטלפון או פרטי הטלגרם שלך כדי שהמטפל יוכל ליצור איתך קשר?',
       moodQuestion: 'שאלה 3: מה שלומך היום?',
-      budgetQuestion: 'שאלה 17: חשוב לנו לתת ללקוחות את הטיפול שהם מחפשים במחיר שהם מחפשים.\nכמה הית מעונין לשלם על הטיפול?',
+      budgetQuestion: 'שאלה 14: חשוב לנו לתת ללקוחות את הטיפול שהם מחפשים במחיר שהם מחפשים.\nכמה הית מעונין לשלם על הטיפול?',
       ratingQuestion: 'שאלה 19: איך הייתה החוויה שלך עם מיגל עד כה?',
       atmosphereQuestion: 'שאלה 13: איזו אווירה תרצה במהלך העיסוי?',
       bringsHereOptions: {
@@ -669,9 +671,10 @@ export const translations: Record<Language, Translations> = {
       ratingThanks: 'תודה על המשוב! כעת ניתן לסגור את השיחה בבטחה.',
       contactConfirmation: 'תודה.  ניצור קשר בקרוב ב-',
       contactThankYou: 'תודה. ניצור איתך קשר בקרוב ב-',
-      agreementThanks: 'תודה שאתה עוזר לנו להיות טובים יותר!',
-      therapistPrefQuestion: 'שאלה 9: העדפה למטפל?',
-      contactQuestion: 'שאלה 16: כדי לחבר אותך עם המטפל המתאים ביותר, אנא השאר מספר טלפון או שם משתמש בטלגרם ליצירת קשר.',
+          agreementThanks: 'תודה שאתה עוזר לנו להיות טובים יותר! לחץ על \'המשך\' כדי לראות את המטפל המומלץ שלך ולהתחבר!',
+    continueToTherapist: 'לחץ על \'המשך\' כדי לראות את המטפל המומלץ שלך ולהתחבר!',
+    therapistPrefQuestion: 'שאלה 9: העדפה למטפל?',
+      contactQuestion: 'שאלה 17: כדי לחבר אותך עם המטפל המתאים ביותר, אנא השאר מספר טלפון או שם משתמש בטלגרם ליצירת קשר.',
       bringsHereQuestion: 'שאלה 6: כדי ליצור טיפול שמתאים בדיוק עבורך, ספר לנו מה הביא אותך לכאן היום.',
       touchStyleQuestion: 'שאלה 8: סגנון מגע?',
       placeholder: 'הקלד את ההודעה שלך...',

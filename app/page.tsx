@@ -3,34 +3,16 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Play, MessageCircle, Star, CheckCircle, ArrowRight, ChevronLeft, ChevronRight, Brain, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { useState, useEffect } from "react"
-import { useAppStore } from "./store/use-app-store"
+import { useState } from "react"
 import { useLanguage } from "@/hooks/use-language"
-import ChatInterface from "./components/chat-interface"
 import CommunicationModal from "./components/communication-modal"
 import LanguageSwitcher from "@/components/language-switcher"
 import Head from "next/head"
 
 export default function TherapeuticScentsApp() {
-  const { showChat, startChat } = useAppStore()
   const [currentArticle, setCurrentArticle] = useState(0)
   const [contactModalOpen, setContactModalOpen] = useState(false)
   const { t, isRTL } = useLanguage()
-  
-  // Auto-start chat when component mounts or language changes
-  useEffect(() => {
-    if (showChat) {
-      const currentMessages = useAppStore.getState().messages
-      if (!currentMessages.length) {
-        // First time initialization
-        startChat(t)
-      } else {
-        // Force complete retranslation when language changes
-        const retranslateMessages = useAppStore.getState().retranslateMessages
-        retranslateMessages(t)
-      }
-    }
-  }, [t, startChat, showChat])
   
   const nextArticle = () => {
     setCurrentArticle((prev) => (prev + 1) % t.testimonials.articles.length)
@@ -38,10 +20,6 @@ export default function TherapeuticScentsApp() {
 
   const prevArticle = () => {
     setCurrentArticle((prev) => (prev - 1 + t.testimonials.articles.length) % t.testimonials.articles.length)
-  }
-
-  if (showChat) {
-    return <ChatInterface />
   }
 
   return (
@@ -105,7 +83,7 @@ export default function TherapeuticScentsApp() {
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             <Button
-              onClick={() => startChat(t)}
+              onClick={() => window.location.href = '/chat'}
               size="lg"
               className="bg-teal-600 hover:bg-teal-700 text-white px-8 md:px-12 py-4 md:py-6 text-lg md:text-xl font-semibold rounded-full transition-all hover:scale-105 shadow-lg"
             >
@@ -172,7 +150,7 @@ export default function TherapeuticScentsApp() {
 
           <div className="text-center">
             <Button
-              onClick={() => startChat(t)}
+              onClick={() => window.location.href = '/chat'}
               variant="outline"
               size="lg"
               className="border-stone-800 text-stone-800 hover:bg-stone-800 hover:text-white px-6 md:px-8 py-3 md:py-4 text-base md:text-lg rounded-full transition-all hover:scale-105"
@@ -300,7 +278,7 @@ export default function TherapeuticScentsApp() {
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             <Button
-              onClick={() => startChat(t)}
+              onClick={() => window.location.href = '/chat'}
               size="lg"
               className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 text-lg rounded-full"
             >

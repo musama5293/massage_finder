@@ -39,7 +39,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
     // Force retranslation of all messages
     if (typeof retranslateMessages === 'function') {
-      retranslateMessages(translations[language])
+    retranslateMessages(translations[language])
     }
   }, [language, mounted, retranslateMessages])
 
